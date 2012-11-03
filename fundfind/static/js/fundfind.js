@@ -1,4 +1,3 @@
-
 jQuery(document).ready(function() {
 	// clear the title from the front page search box
 	// or set title if box is empty
