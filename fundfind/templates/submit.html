@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript">
+jQuery(document).ready(function() {    
+    var updateform = function(event) {
+        event.preventDefault();
+        if (jQuery(this).val() == "description") {
+            jQuery('.fortest').hide();
+        } else {
+            jQuery('.fortest').show();
+        }
+    }
+    jQuery('input[name=test_or_desc]').bind('change',updateform);
+
+	// "add more" button for Success Responses
+	var test_seq = 0;
+	$('#more_responses').click( function () {
+        test_seq = test_seq + 1;
+		
+        // Insert a copy of the all the <input> tags wrapped in a div right 
+		// before the "add more" button.
+		// getOuterHTML is a homebrew f(), not a jQuery one!
+		var tempHTML = getOuterHTML('.resp-grpinput');
+		tempHTML = tempHTML.replace(/0/g, test_seq);
+        $('#success_responses_group').append(tempHTML);
+		$('#test_' + test_seq + '_logical_operator').show();
+		return false; // prevent form submission
+	});
+	
+	// "add more" button for Useful links
+	$('#more_links').click( function () {
+        
+        // Insert a copy of the useful link <input> tag right before the 
+		// "add more" button.
+		// getOuterHTML is a homebrew f(), not a jQuery one!
+        $('#useful_links_group').append(getOuterHTML('.useful-link'));
+        
+		return false; // prevent form submission
+	});
+    
+	// "add more" button for Tags
+	$('#more_tags').click( function () {
+		var curwidth = $('#tags').width();
+		/* Another 100 pixels should be good on most devices and the user
+		 * shouldn't even have to click the "add more" button again, but
+		 * they can if they want to - so 100 should be a good increment.
+		 */
+		$('#tags').width(curwidth + 100);
+		return false; // prevent form submission
+	});
+});
+
+function getOuterHTML(selector) {
+    /* There is no easy way to get the outerHTML of an element in jQuery.
+     * This is needed since we want to duplicate the useful link <input>.
+     * The code below does .clone().wrap('<p>').parent().html()
+     *
+     * The way it works is that it takes the first element with a certain
+     * class, makes a clone of it in RAM, wraps with a P tag, gets the parent 
+     * of it (meaning the P tag), and then gets the innerHTML property of that.
+     * So we end up copying the element we just selected, which is our goal.
+     
+     * The clone() means we're not actually disturbing the DOM. Without it
+     * all elements with a certain class will be wrapped in a P tag which is
+     * undesirable.
+     */
+	return $(selector).clone().wrap('<p>').parent().html();
+}
+</script>
+
+<div class="action_box">
+    <form action="/submit" method="POST" enctype="multipart/form-data">
+    <fieldset>
+
+        <h2>Submit</h2>
+
+        <p>This service works on a collection of tests for identifying identifiers, 
+        built up from community submissions. We also collect descriptions of 
+        different sorts of identifier, so that other people can learn about them.</p>
+
+        <div class="clearfix">
+        <label for="test_or_desc">Do you want to submit a test or description?</label>
+        <div class="input">
+        <ul class="inputs-list">
+            <li>
+                <label>
+                <input type="radio" name="test_or_desc" value="test" />
+                <span>A test for a kind of identifier</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                <input type="radio" name="test_or_desc" value="description" />
+                <span>A description of a type of identifier</span>
+                </label>
+            </li>
+        </ul>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="name">Short name for the identifier</label>
+        <div class="input">
+        <input class="span2" type="text" name="name" />
+        <span class="help-block">
+        This should be an obvious short name for the identifier e.g. DOI for 
+        digital object identifier. We will try to match what you type to any 
+        shortnames already in use, or you can search short names already in use
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix fortest">
+        <label for="regex">Regular expression</label>
+        <div class="input">
+        <input class="span6" type="text" name="regex" />
+        <span class="help-block">
+        A <a target="_blank" href="http://www.regular-expressions.info/">
+        regular expression</a> that will match the identifier. 
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix fortest">
+        <label for="url">Lookup Service URL</label>
+        <div class="input">
+            <input class="span4" type="text" name="url_prefix" />
+            <input class="span2" type="text" name="url_suffix" />
+        <span class="help-block">
+        if this identifier can be submitted to a URL, e.g like a
+        DOI can be submitted to http://dx.doi.org/, then provide the URL here.
+        <br />If you know of a service that will validate a particular 
+        identifier, put the URL here<br />
+        <br />(If any <a href="/content/urlsuffix">URL suffix</a> is required, 
+        add it in the second small box)
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix fortest">
+        <label for="url">Success response</label>
+        <div class="input">
+			<div id="success_responses_group" class="input-grp-for-addmore">
+				<span class="resp-grpinput input-for-addmore">
+				<span id="test_0_logical_operator" style="display: none;">AND</span>
+				<select class="span2" name="resptests[0][type]">
+					<option>header</option>
+					<option>body</option>
+				</select>
+				<select class="span2" name="resptests[0][cond]">
+					<option>has</option>
+					<option>has not</option>
+				</select>
+				<input class="span2" type="text" name="resptests[0][str]" />
+				</span>
+			</div>
+            <a id="more_responses" class="btn add-more-btn" href="">add more</a>
+			<div class="clearfix"></div>
+			<span class="help-block">
+			We assume that if a service URL does not return a 404, 
+			then the identifier is valid. If, however, you have provided a service URL 
+			that operates differently, please tell us either the headers that signify 
+			success, or a string that we should search the response body for in the 
+			event of successful identification.
+			</span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="description">Description</label>
+        <div class="input">
+        <textarea class="span6" name="description"></textarea>
+        <span class="help-block">
+        A description about the identifier - what it relates to, what it does.
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="useful_links[]">Useful links</label>
+        <div class="input">
+            <div id="useful_links_group" class="input-grp-for-addmore">
+                <span class="useful-link input-for-addmore"><input class="span6" type="text" name="useful_links[]"/></span>
+            </div>
+            <a id="more_links" class="btn add-more-btn" href="">add more</a>
+            <div class="clearfix"></div>
+			<span class="help-block">
+			Any additional useful links related to the identifier you're describing, 
+			e.g. a page explaining the purpose of the identifier, maybe wikipedia or 
+			on the provider site, or perhaps alternative URLs to which the identifier 
+			can be sent that return useful information.
+			</span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="tags">Tags</label>
+        <div class="input">
+            <input class="span2" type="text" name="tags" id="tags"/> 
+            <a id="more_tags" class="btn" href="">add more</a>
+        <span class="help-block">
+        Any <a href="/content/tags">tag words</a> that describe this identifier 
+        or its function. Separated by commas.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="submit">&nbsp;</label>
+        <div class="input"><input class="btn primary span6" type="submit" 
+            name="submit" value="submit" /></div>
+        </div>
+
+    </fieldset>
+    </form>
+</div>
+{% endblock %}
+
