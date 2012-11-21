@@ -4,47 +4,44 @@
 
       <div class="hero-unit">
         <form action="/identify" method="POST" enctype="multipart/form-data">
-        <input class="frontin" type="text" name="q" value="/^(FundFind).*?$/" />
+        <input class="frontin" type="text" name="q" value="Let's fund you..." />
         </form>
-        <p>FundFind is an identifier identifier!
-        <br />Got an ID? Not sure what it is? What you can do with it? Just paste above and hit enter!</p>
-        <p><small>example: 10.1186/1758-2946-3-47</small></p>
+        <p>FundFind lets you share funding opportunities!</p>
+        <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - <a href="/submit">share</a> and look for funding!</p>
+        <p>Just type into the box above to start looking for funds for your next exciting scholarly venture.</p>
       </div>
 
       <div class="row">
         <div class="span4 column">
           <div class="alert-message block-message info">
           <h2>Browse</h2>
-          <p>Have a look at the tests and descriptions which help us identify identifiers.</p>
+          <p>Have a look at the funding opportunities we've got. Advanced search.</p>
           <p><a href="/browse" class="btn">Browse &raquo;</a></p>
-          </div>
-        </div>
-        <div class="span4 column info">
-          <div class="alert-message block-message info">
-          <h2>Identify</h3>
-          <p>You got a string, it looks like some sort of identifer, but which is it?</p>
-          <p><a href="/identify" class="btn">Identify &raquo;</a></p>
           </div>
         </div>
         <div class="span4 column">
           <div class="alert-message block-message info">
-          <h2>Submit</h2>
-          <p>Help us identify identifiers - submit a test or a description</p>
+          <h2>Tell</h2>
+          <p>Share funding opportunities (or record them only for yourself)</p>
           <p><a href="/submit" class="btn">Submit &raquo;</a></p>
           </div>
         </div>
         <div class="span4 column">
           <div class="alert-message block-message info">
-          <h2>Rate</h2>
-          <p>You used the service - now rate the quality of the response</p>
-          <p><a href="/rate" class="btn">Rate &raquo;</a></p>
+          <h2>My account</h2>
+          <p>Saved searches, favourite opportunities, visualisations and settings.</p>
+          <p><a href="/account" class="btn">My account &raquo;</a></p>
+          </div>
+        </div>
+        <div class="span4 column">
+          <div class="alert-message block-message info">
+          <h2>Feedback</h2>
+          <p>How are we doing?</p>
+		  <br />
+		  <br />
+          <p><a href="/feedback" class="btn">Feedback &raquo;</a></p>
           </div>
         </div>
       </div>
       
-      <div class="container">
-      <div class="well">
-      <p>latest stuff</p>
-      </div>
-      </div>
 {% endblock %}

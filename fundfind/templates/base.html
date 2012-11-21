@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>FundFind - an identifier identifier</title>
+    <title>FundFind - an Open way to share, visualise and map out scholarly funding opportunities</title>
     <meta name="description" content="fundfind">
     <meta name="author" content="Cottage Labs">
 
@@ -35,17 +35,12 @@
         <div class="container">
           <h3><a href="/">FundFind</a></h3>
           <ul class="nav">
-            <li><a href="/browse">Browse</a></li>
-            <li><a href="/identify">Identify</a></li>
+            <li><a href="/search">Browse</a></li>
             <li><a href="/submit">Submit</a></li>
-            <li><a href="/rate">Rate</a></li>
+            <li><a href="/account">Account</a></li>
+			<li><a href="/feedback">Feedback</a></li>
           </ul>
           <ul class="nav secondary-nav">
-            <li>
-              <form action="/search" method="GET">
-                <input type="text" name="q" placeholder="search" />
-              </form>
-            </li>
             {% if current_user.is_anonymous() %}
             <li>
               <a href="{{url_for('account.register')}}">Register</a>
@@ -96,10 +91,8 @@
         <div class="span6">
           <h4>About</h4>
           <ul>
-            <li><a href="/content/api">We have an API</a></li>
-            <li><a href="/content/api#twitter">Tweet @fundfind - get responses back!</a></li>
-            <li><a href="https://github.com/cottagelabs/fundfind/issues">Feedback</a></li>
-            <li><a href="https://github.com/cottagelabs/fundfind">Source Code</a></li>
+            <li><a href="/content/api">FundFind API</a></li>
+            <li><a href="TODO source code URL here when the repo is made public">Source Code</a></li>
           </ul>
         </div>
         <div class="span5">
@@ -108,9 +101,9 @@
         <div class="span5">
           <h4>Meta</h4>
           <ul>
-            <li>Might be hosted and supported by UKOLN (if Paul says yes)</li>
-            <li>Coded by <a href="http://cottagelabs.com">Cottage Labs</a></li>
-            <li>All open source</li>
+            <li>Coded by <a href="https://twitter.com/emanuil_tolev">Emanuil Tolev</a></li>
+			<!-- TODO remove (will be) from the below when repo made public -->
+            <li>(will be) All open source</li>
           </ul>
         </div>
       </div>
