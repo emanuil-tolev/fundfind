@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript">
+jQuery(document).ready(function() {	
+	// "add more" button for Useful links
+	$('#more_links').click( function () {
+        
+        // Insert a copy of the useful link <input> tag right before the 
+		// "add more" button.
+		// getOuterHTML is a homebrew f(), not a jQuery one!
+        $('#useful_links_group').append(getOuterHTML('.useful-link'));
+        
+		return false; // prevent form submission
+	});
+    
+	// "add more" button for Tags
+	$('#more_tags').click( function () {
+		var curwidth = $('#tags').width();
+		/* Another 100 pixels should be good on most devices and the user
+		 * shouldn't even have to click the "add more" button again, but
+		 * they can if they want to - so 100 should be a good increment.
+		 */
+		$('#tags').width(curwidth + 100);
+		return false; // prevent form submission
+	});
+});
+
+function getOuterHTML(selector) {
+    /* There is no easy way to get the outerHTML of an element in jQuery.
+     * This is needed since we want to duplicate the useful link <input>.
+     * The code below does .clone().wrap('<p>').parent().html()
+     *
+     * The way it works is that it takes the first element with a certain
+     * class, makes a clone of it in RAM, wraps with a P tag, gets the parent 
+     * of it (meaning the P tag), and then gets the innerHTML property of that.
+     * So we end up copying the element we just selected, which is our goal.
+     
+     * The clone() means we're not actually disturbing the DOM. Without it
+     * all elements with a certain class will be wrapped in a P tag which is
+     * undesirable.
+     */
+	return $(selector).clone().wrap('<p>').parent().html();
+}
+</script>
+
+<div class="action_box">
+    <form action="/describe_funder" method="POST" enctype="multipart/form-data">
+    <fieldset>
+
+        <h2>Describe a funding organisation</h2>
+
+        <p class="help-block">... which provides funding for scholarly endeavours and activities such as research.</p>
+
+        <div class="clearfix fortest">
+        <label for="name">Name</label>
+        <div class="input">
+        <input class="span6" type="text" name="name" />
+        <span class="help-block">
+        Funding organisation's name.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix fortest">
+        <label for="homepage">Home page</label>
+        <div class="input">
+            <input class="span6" type="text" name="homepage" />
+        <span class="help-block">
+        Central point of the web presence of this funder.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="description">Description</label>
+        <div class="input">
+        <textarea class="span6 medium" name="description"></textarea>
+        <span class="help-block">
+        Elaborate on who this funder is, what kind of organisation are they?
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="interested_in">Interested in</label>
+        <div class="input">
+        <textarea class="span6 large" name="interested_in"></textarea>
+        <span class="help-block">
+        What projects would this funder like to fund?
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="policies">Funding policy</label>
+        <div class="input">
+        <textarea class="span6 medium" name="policies"></textarea>
+        <span class="help-block">
+        <p>Does this funder have specific requirements? These could be related to what they want to fund, the associated research outputs or anything else.</p>
+		<p>For example: some will fund biology, medical &amp; health research, but not stem cell-related or genetics-related research. Others may require that all research outputs (e.g. journal articles) are published in Open Access journals or under a specific licence, or that the source data for the study is published.</p>
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="useful_links[]">Useful links</label>
+        <div class="input">
+            <div id="useful_links_group" class="input-grp-for-addmore">
+                <span class="useful-link input-for-addmore"><input class="span6" type="text" name="useful_links[]"/></span>
+            </div>
+            <a id="more_links" class="btn add-more-btn" href="">add more</a>
+            <div class="clearfix"></div>
+			<span class="help-block">
+			Any additional useful links related to the funder you're describing. Can be useful pages on their own website as well.
+			</span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="tags">Tags</label>
+        <div class="input">
+            <input class="span2" type="text" name="tags" id="tags"/> 
+            <a id="more_tags" class="btn" href="">add more</a>
+        <span class="help-block">
+        Any tag words (keywords) that describe this funder or their interests. Separated by commas.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="submit">&nbsp;</label>
+        <div class="input"><input class="btn primary span6" type="submit" 
+            name="submit" value="submit" /></div>
+        </div>
+
+    </fieldset>
+    </form>
+</div>
+{% endblock %}
+

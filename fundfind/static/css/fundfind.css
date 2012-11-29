@@ -64,3 +64,11 @@ div.input-grp-for-addmore {
 a.add-more-btn {
     float: left;
 }
+
+textarea.medium {
+	height: 100px;
+}
+
+textarea.large {
+	height: 200px;
+}
