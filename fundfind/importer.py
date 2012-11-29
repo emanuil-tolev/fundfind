@@ -9,30 +9,10 @@ class Importer(object):
     def __init__(self, owner):
         self.owner = owner
 
-    def submit(self, request):
-        '''Import an identifer test or description into the index.'''
+    def describe_funder(self, request):
+        '''Import information about a funder into the index.'''
         
         
-        # process multiple success response tests - up to 100
-        # python, why you no have a better getlist() CGI iface function?!
-        resptests = []
-        resptest = {}
-        for test_seq in range(0,100):
-        
-            next_resptest = 'resptests[' + str(test_seq) + ']'
-            next_resptest_content = next_resptest + '[str]'
-
-            if next_resptest_content in request.values:
-                if request.values[next_resptest_content].strip():
-                # is the content field filled for this line?
-                    resptest['type'] = request.values[next_resptest + '[type]'].strip()
-                    resptest['cond'] = request.values[next_resptest + '[cond]'].strip()
-                    resptest['str'] = request.values[next_resptest_content].strip()
-                    resptests.append(resptest.copy())
-            else:
-            # no more tests submitted
-                break
-                
         tmpl = self._clean_list(request.values.getlist('useful_links[]'))
         useful_links = []
         for link in tmpl:
@@ -40,65 +20,18 @@ class Importer(object):
             
         record = {
             "name": request.values['name'], # guaranteed to have 'name'
-            "regex": request.values.get("regex",''),
-            "url_prefix": self._prep_link(request.values.get("url_prefix",''), True),
-            "url_suffix": request.values.get("url_suffix",''),
-            "resptests": resptests,
+            "homepage": self._prep_link(request.values.get("homepage",''), endslash=True),
             "description": request.values.get("description",''),
+            "interested_in": request.values.get("interested_in",''),
+            "policies": request.values.get("policies",''),
             "useful_links": useful_links,
             "tags": self._clean_list(request.values.get("tags",'').split(",")), 
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
-            "ratings": [],
-            "score_feedback": 0,
-            "votes_feedback": 0,
-            "auto_succeeded": 0
         }
         
-        # guaranteed to have 'test_or_desc'
-        if request.values["test_or_desc"] == "test":
-            fundfind.dao.Test.upsert(record)
-        if request.values["test_or_desc"] == "description":
-            fundfind.dao.Description.upsert(record)
-	
-    def rate(self, request):
-        # construct a dictionary containing all the feedback information the
-        # user gave us and some additional bits
-        rating = {}
-        rating['owner'] = self.owner.id
-        rating['comment'] = request.values.get("comment", '')
-        if request.values['test_worked'] == 'Yes':
-            test_worked = True
-        elif request.values['test_worked'] == 'No':
-            test_worked = False
-        rating['test_worked'] = test_worked
-        rating['identifier'] = request.values.get("identifier_string", '')
-        rating['created'] = datetime.now().isoformat()
-        rating['modified'] = datetime.now().isoformat()
-        
-        # The below will crash and burn if there is no test_id in the request
-        # we got, and so it should - we can't know which test to rate without
-        # its unique id in the index.
-        test = fundfind.dao.Test.get(request.values['test_id'])
-        
-        # add the rating for this test
-        test.data.setdefault('ratings',[]) # if there's no 'ratings' key, add it as an empty list
-        test.data['ratings'].append(rating) # add the rating dict to the list of ratings
-        
-        # So, we end up with a key "ratings" in the test's "_source" dictionary
-        # and the value of that is a list of all received ratings, each of
-        # which is in itself a dictionary
-        
-        # also modify the test's feedback-generated accuracy score and
-        # increment total votes counter
-        if test_worked:
-            test['score_feedback'] = test.data.get('score_feedback', 0) + 1
-        else:
-            test['score_feedback'] = test.data.get('score_feedback', 0) - 1 # yes, it can go negative!
-        test['votes_feedback'] = test.data.get('votes_feedback', 0) + 1
-        
-        test.save()
+        fundfind.dao.Funder.upsert(record)
         
     def _clean_list(self, list):
         '''Clean up a list coming from an HTML form. Returns a list.
