@@ -138,46 +138,8 @@ class DomainObject(UserDict.IterableUserDict):
 class Test(DomainObject):
     __type__ = 'test'
 	
-class Description(DomainObject):
-    __type__ = 'description'
-	
-class Identifier(DomainObject):
-    __type__ = 'identifier'
-    
-    @classmethod
-    def identify(self, q):
-        '''Tries to identify an identifier. Returns a list of dictionaries, each item in the list being an answer (a match for q). Returns None if there's no match.
-        
-        Works as follows: 1. try cache; 2. try tests in the index; 3. it's an unknown one.
-        
-        :param q: string to try to identify
-        '''
-        # try the cache first
-        chits = self.query(q=q) # cache hits
-        if chits['hits']['total'] != 0:
-            return chits['hits']['hits'][0]['_source']['what']
-            
-        # try identification using the tests in the index
-        engine = fundfind.identifier.Identificator()
-        answer = engine.identify(q)
-        if answer:
-            # save the identifier with its type
-            result = {}
-            result['what'] = answer
-            result['identifier'] = q
-            fundfind.dao.Identifier.upsert(result)
-            
-        # neither cache search, nor regex identification succeeded
-        else:
-            # so now we'd like to record this identifier as "unknown"
-            # but first, we'll check the list of unknown identifiers
-            # so that we don't get duplicate records for the same id.
-            unknowns = fundfind.dao.UIdentifier.query(q=q)
-            if unknowns['hits']['total'] == 0:
-                # there are no such unknown identifiers, so put this one up
-                fundfind.dao.UIdentifier.upsert({'identifier':q})
-        
-        return answer
+class Funder(DomainObject):
+    __type__ = 'funder'
     
 class UIdentifier(DomainObject):
     __type__ = 'uidentifier'
@@ -198,9 +160,3 @@ class Account(DomainObject, UserMixin):
             })
         colls = [ Collection(**item['_source']) for item in colls['hits']['hits'] ]
         return colls
-        
-class TwitterCreds(DomainObject):
-    __type__ = 'twittercreds'
-
-class TwitterLastID(DomainObject):
-    __type__ = 'twitterlastid'
