@@ -8,7 +8,8 @@ setup(
         "Flask==0.8",
         "Flask-Login",
         "Flask-WTF",
-        "pyes==0.16"
+        "pyes==0.16",
+        "requests"
 				],
     url = 'TODO PUT URL HERE WHEN DEPLOYED',
     author = 'Emanuil Tolev',
