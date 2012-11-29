@@ -221,115 +221,34 @@ app.add_url_rule('/rate', view_func=RateView.as_view('rate'))
 
 
 class SubmitView(MethodView):
-    '''Submit a regex or an identifier for addition to the collections. In the format as specified in the collections.
-    Perhaps also submit additional actions for a particular identifier.
-    Should trigger email alert to mailing list for a simple approval workflow'''
+    '''Submit information about a funding organisation'''
     def get(self):
         if not auth.collection.create(current_user, None):
-            flash('You need to login to be able to submit.')
+            flash('You need to login to be able to describe funders or funding opportunities.')
             return redirect('/account/login')
-        if request.values.get("test_or_desc") is not None:
+        if request.values.get("name") is not None:
             return self.post()
-        return render_template('submit.html')
+        return render_template('describe_funder.html')
 
     def post(self):
         if not auth.collection.create(current_user, None):
             abort(401)
-        # TODO: need some better validation. see python flask docs for info.
-        if 'test_or_desc' in request.values:
-            if request.values['test_or_desc'] == 'test':
-                if request.values['regex']:
-                    try:
-                        dummy = re.compile(request.values['regex'])
-                    except re.error as e:
-                        flash('There is a problem with the regular expression you have provided. Python needs to be able to understand it. Our Python (' + config['running_python_version'] + ') says: ' + e.message)
-                        return render_template('submit.html')
-                else:
-                    flash('You need to provide a regular expression when you\'re submitting a Test')
-                    return render_template('submit.html')
             
-            if request.values['name']:
-                importer = fundfind.importer.Importer(owner=current_user)
-                importer.submit(request)
-                flash('Successfully received %s' % request.values["test_or_desc"])
-                return redirect('/browse#' + request.values['name'])
-            else:
-                flash('We need a name for your test / description')
-                return render_template('submit.html')
+        # TODO: need some better validation. see python flask docs for info.
+        # TODO check if we already have this name as a funder
+        if request.values.has_key('name') and request.values['name']:
+            importer = fundfind.importer.Importer(owner=current_user)
+            importer.describe_funder(request)
+            flash('Successfully received funding organisation information')
+            # TODO fix this when funders route is implemented
+            # return redirect('/funders/' + request.values['name'])
+            return redirect('/')
         else:
-            flash('You did not tell us if you are submitting a test or a description')
-            return render_template('submit.html')
+            flash('We need the name of the funding organisation')
+            
+            return render_template('describe_funder.html')
 
-app.add_url_rule('/submit', view_func=SubmitView.as_view('submit'))
-
-
-# code from bibserver - need to review what it does and why, and see if it works
-@app.route('/record/<path:path>')
-def record(path):
-    JSON = False
-    if path.endswith(".json") or request.values.get('format',"") == "json":
-        path = path.replace(".json","")
-        JSON = True
-
-    res = fundfind.dao.Test.query(q='id:"' + path + '"')
-
-    if res["hits"]["total"] == 0:
-        abort(404)
-    elif JSON:
-        return outputJSON(results=res, coll=cid, record=True)
-    elif res["hits"]["total"] != 1:
-        io = fundfind.iomanager.IOManager(res)
-        return render_template('record.html', io=io, multiple=True)
-    else:
-        io = fundfind.iomanager.IOManager(res)
-        return render_template('record.html', io=io)
-
-# code from bibserver - need to review what it does and why, and see if it works
-@app.route('/<path:path>')
-def search(path=''):
-    io = dosearch(path.replace(".json",""))
-    if path.endswith(".json") or request.values.get('format',""):
-        return outputJSON(results=io.results)
-    else:
-        return render_template('search/index.html', io=io)
-
-
-# code from bibserver - need to review what it does and why, and see if it works
-def dosearch(path,searchtype='identifier'):
-    # prevent UnboundLocalError: local variable X referenced before assignment errors by initialising some variables
-    args = {}
-    implicit_key = None
-    
-    if 'from' in request.values:
-        args['start'] = request.values.get('from')
-    if 'size' in request.values:
-        args['size'] = request.values.get('size')
-    if 'sort' in request.values:
-        if request.values.get("sort") != "..." and request.values.get("sort") != "":
-            args['sort'] = {request.values.get('sort') : {"order" : request.values.get('order','asc')}}
-    if 'q' in request.values:
-        if len(request.values.get('q')) > 0:
-            args['q'] = request.values.get('q')
-
-    if path != '' and not path.startswith("search"):
-        path = path.strip()
-        if path.endswith("/"):
-            path = path[:-1]
-        bits = path.split('/',1)
-        if len(bits) == 2:
-            implicit_key = bits[0]
-            implicit_value = bits[1]
-
-    if implicit_key:
-        args['q'] = implicit_value
-
-    if searchtype == 'identifier' or implicit_key == 'identifier':
-        results = fundfind.dao.Identifier.query(**args)
-    if searchtype == 'test' or implicit_key == 'test':
-        results = fundfind.dao.Test.query(**args)
-    if searchtype == 'description' or implicit_key == 'description':
-        results = fundfind.dao.Description.query(**args)
-    return fundfind.iomanager.IOManager(results, args)
+app.add_url_rule('/describe_funder', view_func=SubmitView.as_view('describe_funder'))
 
 
 def outputJSON(results, record=False):
