@@ -1,6 +1,10 @@
 {
     # service
     "service_name" : "FundFind",
+	
+	# admin e-mail addresses
+	# TODO enable when publically deployed
+	#"ADMINS": ['emanuil@cottagelabs.com'],
 
     # provide site address URL if you need to overwrite what it might otherwise be calculated to be
     #"SITE_URL" : "",
@@ -13,7 +17,7 @@
 
     # elasticsearch settings
     "ELASTIC_SEARCH_HOST" : "127.0.0.1:9200",
-    "ELASTIC_SEARCH_DB" : "fundmap",
+    "ELASTIC_SEARCH_DB" : "fundfind",
 
     # default results and paging options
     "results_per_page" : 10,
