@@ -27,8 +27,8 @@ def setup_error_email(app):
         from logging.handlers import SMTPHandler
         mail_handler = SMTPHandler('127.0.0.1',
                                    'server-error@no-reply.com',
-                                   ADMINS, 'error')
-        mail_handler.setLevel(logging.ERROR)
+                                   ADMINS, 'FundFind error')
+        mail_handler.setLevel(logging.error)
         app.logger.addHandler(mail_handler)
 
 app = create_app()
