@@ -9,7 +9,8 @@ setup(
         "Flask-Login",
         "Flask-WTF",
         "pyes==0.16",
-        "requests"
+        "requests",
+        "parsedatetime==0.8.7"
 				],
     url = 'TODO PUT URL HERE WHEN DEPLOYED',
     author = 'Emanuil Tolev',
