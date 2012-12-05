@@ -35,6 +35,32 @@ class Importer(object):
         
         fundfind.dao.Funder.upsert(record)
         
+    def share_fundopp(self, request):
+        '''Import information about a funding opportunity into the index.'''
+        
+        
+        tmpl = self._clean_list(request.values.getlist('useful_links[]'))
+        useful_links = []
+        for link in tmpl:
+            useful_links.append(self._prep_link(link))
+            
+        record = {
+            "short_desc": request.values['short_desc'], # guaranteed to have this
+            "type": request.values.get("type", ''),
+            "url": self._prep_link(request.values.get("url",''), endslash=True),
+            "description": request.values.get("description",''),
+            "issue_date": _str2isodt(request.values.get('issue_date','')),
+            "closing_date": _str2isodt(request.values.get('closing_date','')),
+            "money_available": request.values.get('money_available',''),
+            "useful_links": useful_links,
+            "tags": self._clean_list(request.values.get("tags",'').split(",")), 
+            "created": datetime.now().isoformat(),
+            "modified": datetime.now().isoformat(),
+            "owner": self.owner.id,
+        }
+        
+        fundfind.dao.Funder.upsert(record)
+        
     def _clean_list(self, list):
         '''Clean up a list coming from an HTML form. Returns a list.
         Returns an empty list if given an empty list.
