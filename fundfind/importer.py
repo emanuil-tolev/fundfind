@@ -1,3 +1,5 @@
+import parsedatetime
+
 import urllib2
 from datetime import datetime
 from cStringIO import StringIO
@@ -76,3 +78,39 @@ class Importer(object):
                 link = 'http://' + link
             
         return link
+        
+    
+    # The whole _str2isodt (originally named datetimeFromString) helper method 
+    # is taken from
+    # http://stackoverflow.com/questions/1810432/handling-the-different-results-from-parsedatetime
+    # The parsedatetime 3rd party package for parsing human-readable dates
+    # returns different types of values from its parse() method, but I only
+    # care for Python native datetime objects, so this helper is used to
+    # convert whatever parsedatetime returns to native datetime.
+    
+    def _str2isodt( s ):
+        if not s.strip():
+            return None
+
+        c = pdt.Calendar()
+        result, what = c.parse( s )
+
+        dt = None
+
+        # what was returned (see http://code-bear.com/code/parsedatetime/docs/)
+        # 0 = failed to parse
+        # 1 = date (with current time, as a struct_time)
+        # 2 = time (with current date, as a struct_time)
+        # 3 = datetime
+        if what in (1,2):
+            # result is struct_time
+            dt = datetime.datetime( *result[:6] )
+        elif what == 3:
+            # result is a datetime
+            dt = result
+
+        if dt is None:
+            # Failed to parse
+            raise ValueError, ("Don't understand date '"+s+"'")
+
+        return dt.isoformat()
