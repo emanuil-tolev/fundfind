@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript">
+jQuery(document).ready(function() {	
+	// "add more" button for Useful links
+	$('#more_links').click( function () {
+        
+        // Insert a copy of the useful link <input> tag right before the 
+		// "add more" button.
+		// getOuterHTML is a homebrew f(), not a jQuery one!
+        $('#useful_links_group').append(getOuterHTML('.useful-link'));
+        
+		return false; // prevent form submission
+	});
+    
+	// "add more" button for Tags
+	$('#more_tags').click( function () {
+		var curwidth = $('#tags').width();
+		/* Another 100 pixels should be good on most devices and the user
+		 * shouldn't even have to click the "add more" button again, but
+		 * they can if they want to - so 100 should be a good increment.
+		 */
+		$('#tags').width(curwidth + 100);
+		return false; // prevent form submission
+	});
+	
+	// Generate short titles automatically from the actual Title input by the user.
+	// This is just a visualisation for the user using the server's slugify function.
+	// This gets thrown away of course (guard against malformed or crafted requests).
+	// The server will just use its slugify functionality on Title when processing the form.
+	$('input[name=title]').keyup( function() {
+		// prepare for AJAX request
+		var slugify_svc_url = 'slugify';
+		var slugify_request_data = {make_into_slug: $(this).val()};
+		var slugify_success = function(slug) {
+			$('input[name=unique_title]').val(slug);
+		};
+		
+		$.post(slugify_svc_url, slugify_request_data, slugify_success);
+	});
+});
+
+function getOuterHTML(selector) {
+    /* There is no easy way to get the outerHTML of an element in jQuery.
+     * This is needed since we want to duplicate the useful link <input>.
+     * The code below does .clone().wrap('<p>').parent().html()
+     *
+     * The way it works is that it takes the first element with a certain
+     * class, makes a clone of it in RAM, wraps with a P tag, gets the parent 
+     * of it (meaning the P tag), and then gets the innerHTML property of that.
+     * So we end up copying the element we just selected, which is our goal.
+     
+     * The clone() means we're not actually disturbing the DOM. Without it
+     * all elements with a certain class will be wrapped in a P tag which is
+     * undesirable.
+     */
+	return $(selector).clone().wrap('<p>').parent().html();
+}
+</script>
+
+<div class="action_box">
+    <form action="/share_fundopp" method="POST" enctype="multipart/form-data">
+    <fieldset>
+
+        <h2>Share a funding opportunity</h2>
+
+		 
+		<!-- TODO delete this help block once the radio button menu is in place -->
+        <p class="help-block">... with your research group, department, institution, or (recommended) the world!.</p>
+
+		<div class="clearfix fortest">
+        <label for="name">Funder</label>
+        <div class="input">
+			<input class="span6" type="text" name="funder" />
+            <!-- <div class="dropdown" id="funders-dropdown" data-dropdown="dropdown">
+			<ul class="dropdown-menu" role="menu">
+			<li><a href="#">EPSRC</a></li>
+			<li><a href="#">BBSRC</a></li>
+			<li><a href="#">Wellcome Trust</a></li>
+			<li class="divider"></li>
+			<li><a href="#">New Funder</a></li>
+			</ul> 
+			</div>-->
+        <!-- <span class="help-block">
+        
+        </span> -->
+        </div>
+        </div>
+		
+        <div class="clearfix fortest">
+        <label for="title">Title</label>
+        <div class="input">
+        <input class="span6" type="text" name="title" />
+        <!-- <span class="help-block">
+        
+        </span> -->
+        </div>
+        </div>
+		
+        <div class="clearfix fortest">
+        <label for="unique_title">Unique title</label>
+        <div class="input">
+        <input class="span6" type="text" name="unique_title" disabled/>
+        <span class="help-block">
+		Generated automatically. Unique title used to refer to this funding opportunity within the system.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix fortest">
+        <label for="closing_date">Closing date</label>
+        <div class="input">
+            <input class="span4" type="text" name="closing_date" />
+        <span class="help-block">
+        Closing <em>time</em> can be included if available.
+        </span>
+        </div>
+        </div>
+		
+        <div class="clearfix fortest">
+        <label for="funds">Funds available</label>
+        <div class="input">
+		<!-- TODO make this a radio button menu -->
+			<ul class="inputs-list" style="width: auto;">
+				<li style="display: inline-block; width:auto;">
+				  <label>
+					<input type="radio" checked name="optionsRadios" value="exactly" />
+					<span>exactly</span>
+				  </label>
+				</li>
+				
+				<li style="display: inline-block; width:auto;">
+				  <label>
+					<input type="radio" checked name="optionsRadios" value="upto" />
+					<span>up to</span>
+				  </label>
+				</li>
+				
+				<li style="display: inline-block; width:auto;">
+					<div class="input-prepend" style="display: inline-block; width:auto;">
+					<span class="add-on">&pound;</span>
+					<input class="span3" id="prependedInput" name="funds" type="text" />
+					</div>
+				</li>
+			</ul>
+			
+        <span class="help-block">
+        How much money is available (or might be available) through this funding opportunity.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="issue_date">Issue date</label>
+        <div class="input">
+			<input class="span2" type="text" name="issue_date" />
+        <span class="help-block">
+        When was this funding opportunity published? (Or when was this call issued?)
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="more_info">Additional information</label>
+        <div class="input">
+        <textarea class="span6 medium" name="more_info"></textarea>
+        <span class="help-block">
+        E.g.: how does the funder treat this funding opportunity? How do they classify the opportunity? How important is it to them / how does it fit in with their general strategy? Does it require security clearance?
+        </span>
+        </div>
+        </div>
+		
+		<div class="clearfix">
+        <label for="useful_links[]">Useful links</label>
+        <div class="input">
+            <div id="useful_links_group" class="input-grp-for-addmore">
+                <span class="useful-link input-for-addmore"><input class="span6" type="text" name="useful_links[]"/></span>
+            </div>
+            <a id="more_links" class="btn add-more-btn" href="">add more</a>
+            <div class="clearfix"></div>
+			<span class="help-block">
+			Any additional useful links related to to this funding opportunity. Can be useful pages on their own website as well. If they describe general policies or requirements related to all opportunities by this funder, it is best add them to the funder's Useful Links section.
+			<!-- TODO: generate URL based on choice of funder above -->
+			</span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="tags">Tags</label>
+        <div class="input">
+            <input class="span2" type="text" name="tags" id="tags"/> 
+            <a id="more_tags" class="btn" href="">add more</a>
+        <span class="help-block">
+        Any tag words (keywords) that describe this funding opportunity. Separated by commas.
+        </span>
+        </div>
+        </div>
+
+        <div class="clearfix">
+        <label for="submit">&nbsp;</label>
+        <div class="input"><input class="btn primary span6" type="submit" 
+            name="submit" value="submit" /></div>
+        </div>
+
+    </fieldset>
+    </form>
+</div>
+{% endblock %}
+

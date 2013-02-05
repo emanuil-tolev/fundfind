@@ -220,7 +220,7 @@ class RateView(MethodView):
 app.add_url_rule('/rate', view_func=RateView.as_view('rate'))
 
 
-class SubmitView(MethodView):
+class DescribeFunderView(MethodView):
     '''Submit information about a funding organisation'''
     def get(self):
         if not auth.collection.create(current_user, None):
@@ -248,8 +248,53 @@ class SubmitView(MethodView):
             
             return render_template('describe_funder.html')
 
-app.add_url_rule('/describe_funder', view_func=SubmitView.as_view('describe_funder'))
+app.add_url_rule('/describe_funder', view_func=DescribeFunderView.as_view('describe_funder'))
 
+class ShareFundoppView(MethodView):
+    '''Submit information about a funding opportunity'''
+    def get(self):
+        if not auth.collection.create(current_user, None):
+            flash('You need to login to be able to describe funders or funding opportunities.')
+            return redirect('/account/login')
+        if request.values.get("name") is not None:
+            return self.post()
+        return render_template('share_fundopp.html')
+
+    def post(self):
+        if not auth.collection.create(current_user, None):
+            abort(401)
+            
+        # TODO: need some better validation. see python flask docs for info.
+        # TODO check if we already have this name as a fundopp
+        if request.values.has_key('title') and request.values['title']:
+            importer = fundfind.importer.Importer(owner=current_user)
+            importer.share_fundopp(request)
+            flash('Successfully received funding opportunity information')
+            # TODO fix this when fundopps route is implemented
+            # return redirect('/fundopps/' + request.values['short_title'])
+            return redirect('/')
+        else:
+            flash('We need the title of the funding opportunity')
+            
+            return render_template('share_fundopp.html')
+
+app.add_url_rule('/share_fundopp', view_func=ShareFundoppView.as_view('share_fundopp'))
+
+@app.route('/slugify', methods=['GET','POST'])
+def expose_slugify():
+    '''Expose the slugify utility function to the world (to be used in 
+    particular by AJAX requests showing the user what their string will look
+    like after it is slugified.
+    
+    Used for generating unique identifiers from titles (e.g. of funding
+    opportunities) and other such strings.'''
+    # if the expected parameter is not found in the request, issue a
+    # 400 Bad Request response
+    if not request.values.has_key('make_into_slug'):
+        abort(400)
+    else:
+        from fundfind.util import slugify as slugify
+        return slugify(request.values['make_into_slug'])
 
 def outputJSON(results, record=False):
     '''build a JSON response, with metadata unless specifically asked to suppress'''
