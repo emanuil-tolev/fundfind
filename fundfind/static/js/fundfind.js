@@ -12,5 +12,3 @@ jQuery(document).ready(function() {
     jQuery('.frontin').focus(setTitle);
 	jQuery('.frontin').blur(setTitle);
 });
-
-
