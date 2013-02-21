@@ -4,14 +4,6 @@ setup(
     name = 'fundfind',
     version = '0.1',
     packages = find_packages(),
-    install_requires = [
-        "Flask==0.8",
-        "Flask-Login",
-        "Flask-WTF",
-        "pyes==0.16",
-        "requests",
-        "parsedatetime==0.8.7"
-				],
     url = 'TODO PUT URL HERE WHEN DEPLOYED',
     author = 'Emanuil Tolev',
     author_email = 'emanuil.tolev@gmail.com',
