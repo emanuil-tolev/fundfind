@@ -1,4 +1,4 @@
-import parsedatetime
+from parsedatetime import parsedatetime as pdt
 
 import urllib2
 from datetime import datetime
@@ -45,13 +45,18 @@ class Importer(object):
             useful_links.append(self._prep_link(link))
             
         record = {
-            "short_desc": request.values['short_desc'], # guaranteed to have this
+            "title": request.values.get("title", ''),
+            "short_desc": request.values.get('unique_title', util.slugify(request.values.get("title", '')) ),
             "type": request.values.get("type", ''),
             "url": self._prep_link(request.values.get("url",''), endslash=True),
             "description": request.values.get("description",''),
-            "issue_date": _str2isodt(request.values.get('issue_date','')),
-            "closing_date": _str2isodt(request.values.get('closing_date','')),
-            "money_available": request.values.get('money_available',''),
+#            "issue_date": self._str2isodt(request.values.get('issue_date','')),
+#            "closing_date": self._str2isodt(request.values.get('closing_date','')),
+            "issue_date": request.values.get('issue_date',''),
+            "closing_date": request.values.get('closing_date',''),
+            "funds": request.values.get('funds',''),
+            "funds_exactly_or_upto": request.values.get('funds_exactly_or_upto',''),
+            "more_info": request.values.get('more_info',''),
             "useful_links": useful_links,
             "tags": self._clean_list(request.values.get("tags",'').split(",")), 
             "created": datetime.now().isoformat(),
@@ -59,7 +64,7 @@ class Importer(object):
             "owner": self.owner.id,
         }
         
-        fundfind.dao.Funder.upsert(record)
+        fundfind.dao.FundingOpp.upsert(record)
         
     def _clean_list(self, list):
         '''Clean up a list coming from an HTML form. Returns a list.
@@ -114,7 +119,7 @@ class Importer(object):
     # care for Python native datetime objects, so this helper is used to
     # convert whatever parsedatetime returns to native datetime.
     
-    def _str2isodt( s ):
+    def _str2isodt(self, s ):
         if not s.strip():
             return None
 

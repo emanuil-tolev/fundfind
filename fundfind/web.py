@@ -62,9 +62,16 @@ def account(user):
     flash('You are not that user. Or you are not logged in.')
     return redirect('/account/login')
 
+# Render static pages e.g. guides, tutorials, explanations...
 @app.route('/content/<path:path>')
 def content(path):
     return render_template('home/content.html', page=path)
+
+# Search / faceted browsing interface
+# TODO capture query string and give it to facetview
+@app.route('/search', methods=['GET','POST'])
+def search():
+    return render_template('search.html', q=request.values.get('q'))
 
 class RateView(MethodView):
     def get(self):
