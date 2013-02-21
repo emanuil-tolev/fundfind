@@ -141,6 +141,9 @@ class Test(DomainObject):
 class Funder(DomainObject):
     __type__ = 'funder'
     
+class FundingOpp(DomainObject):
+    __type__ = 'funding_opportunity'
+    
 class UIdentifier(DomainObject):
     __type__ = 'uidentifier'
 
