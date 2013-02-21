@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>FacetView</title>
 
-  <script type="text/javascript" src="fundfind/static/vendor/facetview/vendor/jquery/1.7.1/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="vendor/jquery/1.7.1/jquery-1.7.1.min.js"></script>
 
   <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
   <script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>  
@@ -16,7 +16,7 @@
 
   <script type="text/javascript" src="jquery.facetview.js"></script>
 
-  <link rel="stylesheet" href="css/facetview.css">
+  <link rel="stylesheet" href="vendor/css/facetview.css">
 
   <script type="text/javascript">
 jQuery(document).ready(function($) {
@@ -25,15 +25,13 @@ jQuery(document).ready(function($) {
     search_url: 'http://localhost:9200/fundfind/_search?',
     search_index: 'elasticsearch',
     datatype: 'json',
-    /*facets: [
-        {'field': 'journal.name.exact', 'display': 'journal'},
-        {'field': 'author.name.exact', 'display': 'author'},
-        {'field': 'year.exact', 'display': 'year'},
-        {'field': 'collection.exact', 'display': 'collection'},
+/*    facets: [
+        {'field': 'name.exact', 'display': 'Funder Name'},
+        {'field': 'title.exact', 'display': 'Opportunity Title'},
     ],
 	*/
-    //search_sortby: [{'display':'year', 'field':'year.exact'},{'display':'journal','field':'journal.name.exact'}],
-//    searchbox_fieldselect: [{'display':'author','field':'author.name'},{'display':'journal','field':'journal.name'}],
+    search_sortby: [{'display':'name', 'field':'name.exact'},{'display':'title','field':'title.exact'}],
+    searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder Name','field':'name'}],
     paging: {
       size: 10
     },
@@ -50,13 +48,49 @@ jQuery(document).ready(function($) {
 		],
 		[
 			{
-				"pre": "<em>Homepage</em>: ",
+			    "pre": "<strong>Title</strong>: ",
+				"field": "title",
+			}
+		],
+		[
+			{
+			    "pre": "<strong>Unique title</strong>: ",
+				"field": "unique_title",
+			}
+		],
+		[
+			{
+				"pre": "<u>Homepage</u>: ",
 				"field": "homepage",
 			}
 		],
 		[
 			{
 				"field": "description",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Interested in</u>: ",
+				"field": "interested_in",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Policies</u>: ",
+				"field": "policies",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Tags</u>: ",
+				"field": "tags",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Useful links</u>: ",
+				"field": "useful_links",
 			}
 		]
 	]
@@ -75,8 +109,6 @@ jQuery(document).ready(function($) {
 
 </head>
 <body>
-
-    <div class="facet-view-simple"></div>
 
     <div class="facet-view-simple"></div>
 
