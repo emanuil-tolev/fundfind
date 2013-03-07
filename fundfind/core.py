@@ -1,5 +1,7 @@
 import os
 from flask import Flask
+from flask.ext.bootstrap import Bootstrap
+
 
 from fundfind import default_settings
 from flask.ext.login import LoginManager, current_user
@@ -32,4 +34,5 @@ def setup_error_email(app):
         app.logger.addHandler(mail_handler)
 
 app = create_app()
+Bootstrap(app)
 

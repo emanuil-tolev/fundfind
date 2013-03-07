@@ -58,7 +58,7 @@ def home():
 def account(user):
     if hasattr(current_user,'id'):
         if user == current_user.id:
-            return render_template('account/view.html',current_user=current_user)
+            return render_template('account/view.html',current_user=current_user, active_page='account')
     flash('You are not that user. Or you are not logged in.')
     return redirect('/account/login')
 
@@ -71,7 +71,7 @@ def content(path):
 # TODO capture query string and give it to facetview
 @app.route('/search', methods=['GET','POST'])
 def search():
-    return render_template('search.html', q=request.values.get('q'))
+    return render_template('search.html', q=request.values.get('q'), active_page='browse')
 
 class RateView(MethodView):
     def get(self):
@@ -105,7 +105,7 @@ class DescribeFunderView(MethodView):
             return redirect('/account/login')
         if request.values.get("name") is not None:
             return self.post()
-        return render_template('describe_funder.html')
+        return render_template('describe_funder.html', active_page='describe_funder')
 
     def post(self):
         if not auth.collection.create(current_user, None):
@@ -135,7 +135,7 @@ class ShareFundoppView(MethodView):
             return redirect('/account/login')
         if request.values.get("name") is not None:
             return self.post()
-        return render_template('share_fundopp.html')
+        return render_template('share_fundopp.html', active_page='share_fundopp')
 
     def post(self):
         if not auth.collection.create(current_user, None):
@@ -188,5 +188,5 @@ def outputJSON(results, record=False):
 
 if __name__ == "__main__":
     fundfind.dao.init_db()
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=True)
 

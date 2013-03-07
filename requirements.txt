@@ -1,7 +1,7 @@
 Flask==0.9
 Flask-Login==0.1.3
-Flask-WTF
-Flask-Bootstrap
+Flask-WTF==0.8.2
+Flask-Bootstrap==2.3.0-2
 pyes==0.16
 requests==1.1.0
 parsedatetime==0.8.7
