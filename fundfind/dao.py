@@ -50,27 +50,16 @@ class DomainObject(UserDict.IterableUserDict):
     def get(cls, id_):
         '''Retrieve object by id.'''
         conn, db = get_conn()
-        try:
-            out = conn.get(db, cls.__type__, id_)
-            return cls(**out['_source'])
-        except pyes.exceptions.ElasticSearchException, inst:
-            if inst.status == 404:
-                return None
-            else:
-                raise
+        
+        out = conn.get(db, cls.__type__, id_)
+        return cls(**out['_source'])
 
     @classmethod
     def delete(cls, id_):
         '''Delete object by id.'''
         conn, db = get_conn()
-        try:
-            out = conn.delete(db, cls.__type__, id_)
-            return cls(out['_source']['ok'])
-        except pyes.exceptions.ElasticSearchException, inst:
-            if inst.status == 404:
-                return None
-            else:
-                raise
+        out = conn.delete(db, cls.__type__, id_)
+        return cls(out['_source']['ok'])
 
     @classmethod
     def upsert(cls, data, state=None):
