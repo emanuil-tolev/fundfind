@@ -60,6 +60,19 @@ class DomainObject(UserDict.IterableUserDict):
                 raise
 
     @classmethod
+    def delete(cls, id_):
+        '''Delete object by id.'''
+        conn, db = get_conn()
+        try:
+            out = conn.delete(db, cls.__type__, id_)
+            return cls(out['_source']['ok'])
+        except pyes.exceptions.ElasticSearchException, inst:
+            if inst.status == 404:
+                return None
+            else:
+                raise
+
+    @classmethod
     def upsert(cls, data, state=None):
         '''Update backend object with a dictionary of data.
         If no id is supplied an uuid id will be created before saving.'''
