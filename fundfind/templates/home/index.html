@@ -3,12 +3,8 @@
 {% block content %}
 
       <div class="hero-unit">
-        <form action="/search" method="POST" enctype="multipart/form-data">
-        <input class="frontin" type="text" name="q" value="Let's fund you..." />
-        </form>
         <p>FundFind lets you share funding opportunities!</p>
-        <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - <a href="/submit">share</a> and look for funding!</p>
-        <p>Just type into the box above to start looking for funds for your next exciting scholarly venture.</p>
+        <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - <a href="{{ url_for('share_fundopp') }}">share</a> and <a href="{{ url_for('search') }}">look for funding!</p>
       </div>
 
       <div class="row">

@@ -8,7 +8,7 @@ import pyes
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-import fundfind.identifier
+from fundfind.config import config
 
 def init_db():
     conn, db = get_conn()
@@ -20,6 +20,9 @@ def init_db():
 def get_conn():
     host = "127.0.0.1:9200"
     db_name = "fundfind"
+#    host = config["ELASTIC_SEARCH_HOST"]
+#    db_name = config["ELASTIC_SEARCH_DB"]
+#    print host, db_name
     conn = pyes.ES([host])
     return conn, db_name
 
@@ -62,7 +65,7 @@ class DomainObject(UserDict.IterableUserDict):
         return cls(out['_source']['ok'])
 
     @classmethod
-    def upsert(cls, data, state=None):
+    def upsert(cls, data):
         '''Update backend object with a dictionary of data.
         If no id is supplied an uuid id will be created before saving.'''
         conn, db = get_conn()
@@ -137,18 +140,12 @@ class DomainObject(UserDict.IterableUserDict):
         # pass through the result raw
         return result.read()
 
-class Test(DomainObject):
-    __type__ = 'test'
-	
 class Funder(DomainObject):
     __type__ = 'funder'
     
 class FundingOpp(DomainObject):
     __type__ = 'funding_opportunity'
     
-class UIdentifier(DomainObject):
-    __type__ = 'uidentifier'
-
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
@@ -157,11 +154,3 @@ class Account(DomainObject, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.data['password'], password)
-
-    @property
-    def collections(self):
-        colls = Collection.query(terms={
-            'owner': [self.id]
-            })
-        colls = [ Collection(**item['_source']) for item in colls['hits']['hits'] ]
-        return colls

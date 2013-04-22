@@ -16,7 +16,7 @@
 
   <script type="text/javascript" src="jquery.facetview.js"></script>
 
-  <link rel="stylesheet" href="vendor/css/facetview.css">
+  <link rel="stylesheet" href="css/facetview.css">
 
   <script type="text/javascript">
 jQuery(document).ready(function($) {
@@ -25,75 +25,22 @@ jQuery(document).ready(function($) {
     search_url: 'http://localhost:9200/fundfind/_search?',
     search_index: 'elasticsearch',
     datatype: 'json',
-/*    facets: [
-        {'field': 'name.exact', 'display': 'Funder Name'},
-        {'field': 'title.exact', 'display': 'Opportunity Title'},
+    facets: [
+        {'field': 'journal.name.exact', 'display': 'journal'},
+        {'field': 'author.name.exact', 'display': 'author'},
+        {'field': 'year.exact', 'display': 'year'},
+        {'field': 'collection.exact', 'display': 'collection'},
     ],
-	*/
-    search_sortby: [{'display':'name', 'field':'name.exact'},{'display':'title','field':'title.exact'}],
-    searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder Name','field':'name'}],
+    search_sortby: [{'display':'year', 'field':'year.exact'},{'display':'journal','field':'journal.name.exact'}],
+    searchbox_fieldselect: [{'display':'author','field':'author.name'},{'display':'journal','field':'journal.name'}],
     paging: {
       size: 10
     },
     predefined_filters: {
-        //'owner.exact': {'term':{'owner.exact':'test'}}
+        'owner.exact': {'term':{'owner.exact':'test'}}
     },
-	result_display: [
-		[
-			{
-				"pre": "<strong>",
-				"field": "name",
-				"post": "</strong>"
-			}
-		],
-		[
-			{
-			    "pre": "<strong>Title</strong>: ",
-				"field": "title",
-			}
-		],
-		[
-			{
-			    "pre": "<strong>Unique title</strong>: ",
-				"field": "unique_title",
-			}
-		],
-		[
-			{
-				"pre": "<u>Homepage</u>: ",
-				"field": "homepage",
-			}
-		],
-		[
-			{
-				"field": "description",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Interested in</u>: ",
-				"field": "interested_in",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Policies</u>: ",
-				"field": "policies",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Tags</u>: ",
-				"field": "tags",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Useful links</u>: ",
-				"field": "useful_links",
-			}
-		]
-	]
+    default_operator: "AND",
+    default_freetext_fuzzify: "*"
   });
   });
 });

@@ -52,6 +52,11 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+    country = TextField('Country')
+    organisation = TextField('Organisation')
+    department = TextField('Department')
+    research_group = TextField('Research Group')
+    interests = TextField('Research interests')
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -59,8 +64,16 @@ def register():
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
         api_key = str(uuid.uuid4())
-        account = dao.Account(id=form.username.data, email=form.email.data,
-                api_key=api_key)
+        account = dao.Account(
+            id=form.username.data,
+            email=form.email.data,
+            api_key=api_key,
+            country=form.country.data,
+            organisation=form.organisation.data,
+            department=form.department.data,
+            research_group=form.research_group.data,
+            interests=form.interests.data
+        )
         account.set_password(form.password.data)
         account.save()
         login_user(account, remember=True)

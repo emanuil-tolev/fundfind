@@ -8,6 +8,11 @@
       {{ render_field(form.email, placeholder="hello@mywebsite.org") }}
       {{ render_field(form.password, placeholder="********") }}
       {{ render_field(form.confirm, placeholder="********") }}
+	  {{ render_field(form.country, placeholder="e.g. United Kingdom") }}
+	  {{ render_field(form.organisation, placeholder="e.g. Aberystwyth University") }}
+	  {{ render_field(form.department, placeholder="e.g. Computer Science") }}
+	  {{ render_field(form.research_group, placeholder="e.g. Advanced Reasoning") }}
+	  {{ render_field(form.interests, placeholder="e.g. medical imaging, autonomous control", size_class="span4") }}
     <input type="submit" value="Signup" class="btn" />
   </form>
 {% endblock %}

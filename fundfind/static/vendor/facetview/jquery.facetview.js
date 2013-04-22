@@ -68,6 +68,41 @@ jQuery.extend({
 });
 
 
+// Deal with indexOf issue in <IE9
+// provided by commentary in repo issue - https://github.com/okfn/facetview/issues/18
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(searchElement /*, fromIndex */ ) {
+        "use strict";
+        if (this == null) {
+            throw new TypeError();
+        }
+        var t = Object(this);
+        var len = t.length >>> 0;
+        if (len === 0) {
+            return -1;
+        }
+        var n = 0;
+        if (arguments.length > 1) {
+            n = Number(arguments[1]);
+            if (n != n) { // shortcut for verifying if it's NaN
+                n = 0;
+            } else if (n != 0 && n != Infinity && n != -Infinity) {
+                n = (n > 0 || -1) * Math.floor(Math.abs(n));
+            }
+        }
+        if (n >= len) {
+            return -1;
+        }
+        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+        for (; k < len; k++) {
+            if (k in t && t[k] === searchElement) {
+                return k;
+            }
+        }
+        return -1;
+    }
+}
+
 /* EXPLAINING THE FACETVIEW OPTIONS
 
 Facetview options can be set on instantiation. The list below details which options are available.
@@ -270,6 +305,26 @@ post_search_callback
 --------------------
 This can define or reference a function that will be executed any time new search results are retrieved and presented on the page.
 
+pushstate
+---------
+Updates the URL string with the current query when the user changes the search terms
+
+linkify
+-------
+Makes any URLs in the result contents into clickable links
+
+default_operator
+----------------
+Sets the default operator in text search strings - elasticsearch uses OR by default, but can also be AND
+
+default_freetext_fuzzify
+------------------------
+If this exists and is not false, it should be either * or ~. If it is * then * will be prepended and appended
+to each string in the freetext search term, and if it is ~ then ~ will be appended to each string in the freetext 
+search term. If * or ~ or : are already in the freetext search term, it will be assumed the user is already trying 
+to do a complex search term so no action will be taken. NOTE these changes are not replicated into the freetext 
+search box - the end user will not know they are happening.
+
 */
 
 
@@ -372,7 +427,11 @@ This can define or reference a function that will be executed any time new searc
             "resultwrap_end":"</td></tr>",
             "result_box_colours":[],
             "fadein":800,
-            "post_search_callback": false
+            "post_search_callback": false,
+            "pushstate": true,
+            "linkify": true,
+            "default_operator": "OR",
+            "default_freetext_fuzzify": false
         };
 
 
@@ -428,10 +487,11 @@ This can define or reference a function that will be executed any time new searc
             event.preventDefault();
             var sortwhat = $(this).attr('href');
             var which = 0;
-            for (item in options.facets) {
-                if ('field' in options.facets[item]) {
-                    if ( options.facets[item]['field'] == sortwhat) {
-                        which = item;
+            for ( var i = 0; i < options.facets.length; i++ ) {
+                var item = options.facets[i];
+                if ('field' in item) {
+                    if ( item['field'] == sortwhat) {
+                        which = i;
                     }
                 }
             }
@@ -544,7 +604,7 @@ This can define or reference a function that will be executed any time new searc
             if ( options.facets.length > 0 ) {
                 var filters = options.facets;
                 var thefilters = '';
-                for ( var idx in filters ) {
+                for ( var idx = 0; idx < filters.length; idx++ ) {
                     var _filterTmpl = '<table id="facetview_{{FILTER_NAME}}" class="facetview_filters table table-bordered table-condensed table-striped" style="display:none;"> \
                         <tr><td><a class="facetview_filtershow" title="filter by {{FILTER_DISPLAY}}" rel="{{FILTER_NAME}}" \
                         style="color:#333; font-weight:bold;" href=""><i class="icon-plus"></i> {{FILTER_DISPLAY}} \
@@ -662,7 +722,7 @@ This can define or reference a function that will be executed any time new searc
             resultobj["start"] = "";
             resultobj["found"] = "";
             resultobj["facets"] = new Object();
-            for (var item in dataobj.hits.hits) {
+            for ( var item = 0; item < dataobj.hits.hits.length; item++ ) {
                 if ( options.fields ) {
                     resultobj["records"].push(dataobj.hits.hits[item].fields);
                 } else if ( options.partial_fields ) {
@@ -721,9 +781,9 @@ This can define or reference a function that will be executed any time new searc
             // add the record based on display template if available
             var display = options.result_display;
             var lines = '';
-            for (var lineitem in display) {
+            for ( var lineitem = 0; lineitem < display.length; lineitem++ ) {
                 line = "";
-                for (object in display[lineitem]) {
+                for ( var object = 0; object < display[lineitem].length; object++ ) {
                     var thekey = display[lineitem][object]['field'];
                     parts = thekey.split('.');
                     // TODO: this should perhaps recurse..
@@ -739,15 +799,17 @@ This can define or reference a function that will be executed any time new searc
                         var thevalue = res[parts[counter]];  // if this is a dict
                     } else {
                         var thevalue = [];
-                        for (var row in res) {
-                            thevalue.push(res[row][parts[counter]]);
+                        if ( res !== undefined ) {
+                            for ( var row = 0; row < res.length; row++ ) {
+                                thevalue.push(res[row][parts[counter]]);
+                            }
                         }
                     }
-                    if (thevalue && thevalue.length) {
+                    if (thevalue && thevalue.toString().length) {
                         display[lineitem][object]['pre']
                             ? line += display[lineitem][object]['pre'] : false;
                         if ( typeof(thevalue) == 'object' ) {
-                            for (var val in thevalue) {
+                            for ( var val = 0; val < thevalue.length; val++ ) {
                                 val != 0 ? line += ', ' : false;
                                 line += thevalue[val];
                             }
@@ -783,7 +845,7 @@ This can define or reference a function that will be executed any time new searc
             options.data = data;
             
             // for each filter setup, find the results for it and append them to the relevant filter
-            for ( var each in options.facets ) {
+            for ( var each = 0; each < options.facets.length; each++ ) {
                 var facet = options.facets[each]['field'];
                 var facetclean = options.facets[each]['field'].replace(/\./gi,'_').replace(/\:/gi,'_');
                 $('#facetview_' + facetclean, obj).children().find('.facetview_filtervalue').remove();
@@ -854,7 +916,7 @@ This can define or reference a function that will be executed any time new searc
             $.each(data.records, function(index, value) {
                 // write them out to the results div
                  $('#facetview_results', obj).append( buildrecord(index) );
-                 $('#facetview_results tr:last-child', obj).linkify();
+                 options.linkify ? $('#facetview_results tr:last-child', obj).linkify() : false;
             });
             if ( options.result_box_colours.length > 0 ) {
                 jQuery('.result_box', obj).each(function () {
@@ -874,6 +936,30 @@ This can define or reference a function that will be executed any time new searc
         // ===============================================
         // functions to do with searching
         // ===============================================
+
+        // fuzzify the freetext search query terms if required
+        var fuzzify = function(querystr) {
+            var rqs = querystr
+            if ( options.default_freetext_fuzzify !== undefined ) {
+                if ( options.default_freetext_fuzzify == "*" || options.default_freetext_fuzzify == "~" ) {
+                    if ( querystr.indexOf('*') == -1 && querystr.indexOf('~') == -1 && querystr.indexOf(':') == -1 ) {
+                        var optparts = querystr.split(' ');
+                        pq = "";
+                        for ( var oi = 0; oi < optparts.length; oi++ ) {
+                            var oip = optparts[oi];
+                            if ( oip.length > 0 ) {
+                                oip = oip + options.default_freetext_fuzzify;
+                                options.default_freetext_fuzzify == "*" ? oip = "*" + oip : false;
+                                pq += oip + " ";
+                            }
+                        };
+                        rqs = pq;
+                    };
+
+                };
+            };
+            return rqs;
+        };
 
         // build the search query URL based on current params
         var elasticsearchquery = function() {
@@ -943,16 +1029,18 @@ This can define or reference a function that will be executed any time new searc
             }
             if (bool) {
                 if ( options.q != "" ) {
-                    var qryval = { 'query': options.q };
+                    var qryval = { 'query': fuzzify(options.q) };
                     $('.facetview_searchfield', obj).val() != "" ? qryval.default_field = $('.facetview_searchfield', obj).val() : "";
+                    options.default_operator !== undefined ? qryval.default_operator = options.default_operator : false;
                     bool['must'].push( {'query_string': qryval } );
                 };
                 nested ? bool['must'].push(nested) : "";
                 qs['query'] = {'bool': bool};
             } else {
                 if ( options.q != "" ) {
-                    var qryval = { 'query': options.q };
+                    var qryval = { 'query': fuzzify(options.q) };
                     $('.facetview_searchfield', obj).val() != "" ? qryval.default_field = $('.facetview_searchfield', obj).val() : "";
+                    options.default_operator !== undefined ? qryval.default_operator = options.default_operator : false;
                     qs['query'] = {'query_string': qryval };
                 } else {
                     qs['query'] = {'match_all': {}};
@@ -967,7 +1055,7 @@ This can define or reference a function that will be executed any time new searc
             options.partial_fields ? qs['partial_fields'] = options.partial_fields : "";
             // set any facets
             qs['facets'] = {};
-            for (var item in options.facets) {
+            for ( var item = 0; item < options.facets.length; item++ ) {
                 var fobj = jQuery.extend(true, {}, options.facets[item] );
                 delete fobj['display'];
                 var parts = fobj['field'].split('.');
@@ -997,9 +1085,14 @@ This can define or reference a function that will be executed any time new searc
                 options.q = $('.facetview_freetext', obj).val();
             } else {
                 options.q = $(options.searchbox_class).last().val();
-            }
+            };
             // make the search query
             var qrystr = elasticsearchquery();
+            // augment the URL bar if possible
+            if ( options.pushstate ) {
+                var currurl = '?source=' + options.querystring;
+                window.history.pushState("","search",currurl);
+            };
             $.ajax({
                 type: "get",
                 url: options.search_url,
@@ -1069,7 +1162,7 @@ This can define or reference a function that will be executed any time new searc
                 } else if ( 'should' in qrystr.bool ) {
                     qrys = qrystr.bool.should;
                 };
-                for ( var qry in qrys ) {
+                for ( var qry = 0; qry < qrys.length; qry++ ) {
                     for ( var key in qrys[qry] ) {
                         if ( key == 'term' ) {
                             for ( var t in qrys[qry][key] ) {
@@ -1160,7 +1253,7 @@ This can define or reference a function that will be executed any time new searc
             thefacetview += '<select class="facetview_orderby" style="border-radius:5px; \
                 -moz-border-radius:5px; -webkit-border-radius:5px; width:100px; background:#eee; margin:0 5px 21px 0;"> \
                 <option value="">order by</option>';
-            for ( var each in options.search_sortby ) {
+            for ( var each = 0; each < options.search_sortby.length; each++ ) {
                 var obj = options.search_sortby[each];
                 thefacetview += '<option value="' + obj['field'] + '">' + obj['display'] + '</option>';
             };
@@ -1172,7 +1265,7 @@ This can define or reference a function that will be executed any time new searc
             thefacetview += '<select class="facetview_searchfield" style="border-radius:5px 0px 0px 5px; \
                 -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; width:100px; margin:0 -2px 21px 0; background:' + options.searchbox_shade + ';">';
             thefacetview += '<option value="">search all</option>';
-            for ( var each in options.searchbox_fieldselect ) {
+            for ( var each = 0; each < options.searchbox_fieldselect.length; each++ ) {
                 var obj = options.searchbox_fieldselect[each];
                 thefacetview += '<option value="' + obj['field'] + '">' + obj['display'] + '</option>';
             };

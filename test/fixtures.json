@@ -1,0 +1,11 @@
+{
+  "accounts": [
+    {
+      "_id": "tester",
+      "fullname": "The Tester",
+      "email": "tester@okfn.org",
+      "password_raw": "pass"
+    }
+  ],
+}
+

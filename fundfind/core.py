@@ -1,10 +1,10 @@
 import os
 from flask import Flask
 from flask.ext.bootstrap import Bootstrap
-
+from flask.ext.login import LoginManager, current_user
 
 from fundfind import default_settings
-from flask.ext.login import LoginManager, current_user
+
 login_manager = LoginManager()
 
 def create_app():

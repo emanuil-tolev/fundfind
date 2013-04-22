@@ -68,3 +68,17 @@ textarea.medium {
 textarea.large {
 	height: 200px;
 }
+
+label {
+	margin-top: 2em;
+}
+/*
+.facet-view-simple{
+    width:800px;
+    height:600px;
+    margin:20px auto 0 auto;
+}
+*/
+footer {
+	margin-top: 2em;
+}

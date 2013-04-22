@@ -6,14 +6,11 @@ from flask import render_template, flash
 from flask.views import View, MethodView
 from flask.ext.login import login_user, current_user
 
-import fundfind.identifier
 import fundfind.dao
-import fundfind.iomanager
 import fundfind.importer
 from fundfind.config import config
 from fundfind.core import app, login_manager
 from fundfind.view.account import blueprint as account
-from fundfind import auth
 
 app.register_blueprint(account, url_prefix='/account')
 
@@ -45,11 +42,6 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
-
-@app.template_filter('dtformat')
-def datetimeformat(value, format='%d-%B-%Y %H:%M:%S'):
-    return value#.strftime(format)
-                
 @app.route('/')
 def home():
     return render_template('home/index.html')
@@ -68,39 +60,14 @@ def content(path):
     return render_template('home/content.html', page=path)
 
 # Search / faceted browsing interface
-# TODO capture query string and give it to facetview
 @app.route('/search', methods=['GET','POST'])
 def search():
-    return render_template('search.html', q=request.values.get('q'), active_page='browse')
-
-class RateView(MethodView):
-    def get(self):
-        if not auth.collection.create(current_user, None):
-            flash('You need to login to rate a regex')
-            return redirect('/account/login')
-        if request.values.get("test_worked") is not None:
-            return self.post()
-            
-        tests = fundfind.dao.Test.query() # get all the tests
-        tests = tests['hits']['hits']
-
-        return render_template('rate.html', tests=tests)
-
-    def post(self):
-        if not auth.collection.create(current_user, None):
-            abort(401)
-        importer = fundfind.importer.Importer(owner=current_user)
-        importer.rate(request)
-        flash('Successfully received your rating')
-        return redirect('/')
-
-app.add_url_rule('/rate', view_func=RateView.as_view('rate'))
-
+    return render_template('search.html', active_page='browse')
 
 class DescribeFunderView(MethodView):
     '''Submit information about a funding organisation'''
     def get(self):
-        if not auth.collection.create(current_user, None):
+        if current_user.is_anonymous():
             flash('You need to login to be able to describe funders or funding opportunities.')
             return redirect('/account/login')
         if request.values.get("name") is not None:
@@ -108,7 +75,7 @@ class DescribeFunderView(MethodView):
         return render_template('describe_funder.html', active_page='describe_funder')
 
     def post(self):
-        if not auth.collection.create(current_user, None):
+        if current_user.is_anonymous():
             abort(401)
             
         # TODO: need some better validation. see python flask docs for info.
@@ -130,7 +97,7 @@ app.add_url_rule('/describe_funder', view_func=DescribeFunderView.as_view('descr
 class ShareFundoppView(MethodView):
     '''Submit information about a funding opportunity'''
     def get(self):
-        if not auth.collection.create(current_user, None):
+        if current_user.is_anonymous():
             flash('You need to login to be able to describe funders or funding opportunities.')
             return redirect('/account/login')
         if request.values.get("name") is not None:
@@ -138,17 +105,14 @@ class ShareFundoppView(MethodView):
         return render_template('share_fundopp.html', active_page='share_fundopp')
 
     def post(self):
-        if not auth.collection.create(current_user, None):
+        if current_user.is_anonymous():
             abort(401)
             
-        # TODO: need some better validation. see python flask docs for info.
         # TODO check if we already have this name as a fundopp
         if request.values.has_key('title') and request.values['title']:
             importer = fundfind.importer.Importer(owner=current_user)
             importer.share_fundopp(request)
             flash('Successfully received funding opportunity information')
-            # TODO fix this when fundopps route is implemented
-            # return redirect('/fundopps/' + request.values['short_title'])
             return redirect('/')
         else:
             flash('We need the title of the funding opportunity')
@@ -172,21 +136,36 @@ def expose_slugify():
     else:
         from fundfind.util import slugify as slugify
         return slugify(request.values['make_into_slug'])
-
-def outputJSON(results, record=False):
-    '''build a JSON response, with metadata unless specifically asked to suppress'''
-    # TODO: in some circumstances, people data should be added to collections too.
-    out = {"metadata":{}}
-    out['metadata']['query'] = request.base_url + '?' + request.query_string
-    out['records'] = results
-    out['metadata']['from'] = request.values.get('from',0)
-    out['metadata']['size'] = request.values.get('size',10)
-
-    resp = make_response( json.dumps(out, sort_keys=True, indent=4) )
-    resp.mimetype = "application/json"
-    return resp
+        
+@app.route('/suggest', methods=['GET','POST'])
+def suggest():
+    '''
+    Use the suggest package to suggest relevant resources.
+    This is a non-specific route which currently does the same as
+    /suggest/projects (but can change to include other suggestion types).
+    
+    '''
+    return suggest_projects()
+    
+@app.route('/suggest/projects', methods=['GET','POST'])
+def suggest_projects():
+    '''
+    Use the suggest package to suggest projects relevant to the incoming
+    similar_to parameter. This is the query the user inputs into facetview
+    when fundfind uses it, but can be called like any other API route with
+    arbitrary similar_to values.
+    '''
+    # need to know what to suggest
+    if not request.values.has_key('similar_to'):
+        abort(400)
+    else:
+        from fundfind.suggest import suggest_projects
+        try:
+            result = jsonify(suggest_projects(request.values['similar_to']))
+        except ValueError as e:
+            result = {'error': 'Suggestions problem. Could not encode suggestions in JSON to send to front-end.'}
+        return result
 
 if __name__ == "__main__":
     fundfind.dao.init_db()
     app.run(host='0.0.0.0', port=5001, debug=True)
-
