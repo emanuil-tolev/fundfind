@@ -15,12 +15,12 @@ def slugify(text, delim=u'_'):
     return unicode(delim.join(result))
 
 def clean_list(list):
-    '''Clean up a list coming from an HTML form. Returns a list.
+    '''Clean up a list. Returns a list.
     Returns an empty list if given an empty list.
     
     How to use: clist = clean_list(your_list)
 
-    Example: you have a list of tags. This is coming in from the form
+    Example: you have a list of tags. This is coming in from an HTML form
     as a single string: e.g. "tag1, tag2, ".
     You do tag_list = request.values.get("tags",'').split(",")
     Now you have the following list: ["tag1"," tag2", ""]

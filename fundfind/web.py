@@ -60,7 +60,7 @@ def content(path):
     return render_template('home/content.html', page=path)
 
 # Search / faceted browsing interface
-@app.route('/search', methods=['GET','POST'])
+@app.route('/search', methods=['GET'])
 def search():
     return render_template('search.html', active_page='browse')
 
