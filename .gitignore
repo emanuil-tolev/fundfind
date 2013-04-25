@@ -6,3 +6,4 @@ sandbox/*
 src*
 build*
 dist*
+elasticsearch*
