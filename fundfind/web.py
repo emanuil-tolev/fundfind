@@ -42,10 +42,6 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
-@app.route('/')
-def home():
-    return render_template('home/index.html')
-
 @app.route('/account/<user>')
 def account(user):
     if hasattr(current_user,'id'):
@@ -62,67 +58,93 @@ def content(path):
 # Search / faceted browsing interface
 @app.route('/search', methods=['GET'])
 def search():
-    return render_template('search.html', active_page='browse')
+    return render_template('search.html', active_page='search')
 
 class DescribeFunderView(MethodView):
     '''Submit information about a funding organisation'''
-    def get(self):
+    def get(self, req_format='html'):
         if current_user.is_anonymous():
-            flash('You need to login to be able to describe funders or funding opportunities.')
-            return redirect('/account/login')
-        if request.values.get("name") is not None:
-            return self.post()
-        return render_template('describe_funder.html', active_page='describe_funder')
+            if req_format == 'json':
+                return jsonify({'error': 'You need to specify api_key in the request data. Only registered users can submit funder or funding opportunity data.'})
+            else:
+                flash('You need to login to be able to describe funders or funding opportunities.')
+                return redirect('/account/login')
 
-    def post(self):
+        if request.values.get("name") is not None:
+            return self.post(req_format)
+
+        if req_format == 'json':
+            return jsonify({'error': 'You need to POST to this URL if using the API.'})
+        else:
+            return render_template('describe_funder.html', active_page='describe_funder')
+
+    def post(self, req_format='html'):
         if current_user.is_anonymous():
             abort(401)
             
-        # TODO: need some better validation. see python flask docs for info.
-        # TODO check if we already have this name as a funder
         if request.values.has_key('name') and request.values['name']:
             importer = fundfind.importer.Importer(owner=current_user)
             importer.describe_funder(request)
-            flash('Successfully received funding organisation information')
-            # TODO fix this when funders route is implemented
-            # return redirect('/funders/' + request.values['name'])
-            return redirect('/')
+            if req_format == 'json':
+                return jsonify({'ok': True})
+            else:
+                flash('Successfully received funding organisation information')
+                return redirect('/')
         else:
-            flash('We need the name of the funding organisation')
-            
-            return render_template('describe_funder.html')
+            error_msg = 'We need the name of the funding organisation'
+            if req_format == 'json':
+                return jsonify({'error': error_msg})
+            else:
+                flash(error_msg)
+                return render_template('describe_funder.html')
 
 app.add_url_rule('/describe_funder', view_func=DescribeFunderView.as_view('describe_funder'))
+app.add_url_rule('/describe_funder.<req_format>', view_func=DescribeFunderView.as_view('describe_funder'))
 
 class ShareFundoppView(MethodView):
     '''Submit information about a funding opportunity'''
-    def get(self):
+    def get(self, req_format='html'):
         if current_user.is_anonymous():
-            flash('You need to login to be able to describe funders or funding opportunities.')
-            return redirect('/account/login')
-        if request.values.get("name") is not None:
-            return self.post()
-        return render_template('share_fundopp.html', active_page='share_fundopp')
+            if req_format == 'json':
+                return jsonify({'error': 'You need to specify api_key in the request data. Only registered users can submit funder or funding opportunity data.'})
+            else:
+                flash('You need to login to be able to describe funders or funding opportunities.')
+                return redirect('/account/login')
 
-    def post(self):
+        if request.values.get("name") is not None:
+            return self.post(req_format)
+
+        if req_format == 'json':
+            return jsonify({'error': 'You need to POST to this URL if using the API.'})
+        else:
+            return render_template('share_fundopp.html', active_page='share_fundopp')
+
+    def post(self, req_format='html'):
         if current_user.is_anonymous():
             abort(401)
             
-        # TODO check if we already have this name as a fundopp
         if request.values.has_key('title') and request.values['title']:
             importer = fundfind.importer.Importer(owner=current_user)
             importer.share_fundopp(request)
-            flash('Successfully received funding opportunity information')
-            return redirect('/')
+            if req_format == 'json':
+                return jsonify({'ok': True})
+            else:
+                flash('Successfully received funding opportunity information')
+                return redirect('/')
         else:
-            flash('We need the title of the funding opportunity')
-            
-            return render_template('share_fundopp.html')
+            error_msg = 'We need the title of the funding opportunity'
+            if req_format == 'json':
+                return jsonify({'error': error_msg})
+            else:
+                flash(error_msg)
+                return render_template('share_fundopp.html')
 
 app.add_url_rule('/share_fundopp', view_func=ShareFundoppView.as_view('share_fundopp'))
+app.add_url_rule('/share_fundopp.<req_format>', view_func=ShareFundoppView.as_view('share_fundopp'))
 
 @app.route('/slugify', methods=['GET','POST'])
-def expose_slugify():
+@app.route('/slugify.<req_format>', methods=['GET','POST'])
+def expose_slugify(req_format=None):
     '''Expose the slugify utility function to the world (to be used in 
     particular by AJAX requests showing the user what their string will look
     like after it is slugified.
@@ -135,20 +157,26 @@ def expose_slugify():
         abort(400)
     else:
         from fundfind.util import slugify as slugify
-        return slugify(request.values['make_into_slug'])
+        slug = slugify(request.values['make_into_slug'])
+        if req_format == 'json':
+            return jsonify({'slug': slug})
+        else:
+            return slug
         
 @app.route('/suggest', methods=['GET','POST'])
-def suggest():
+@app.route('/suggest.<req_format>', methods=['GET','POST'])
+def suggest(req_format='json'):
     '''
     Use the suggest package to suggest relevant resources.
     This is a non-specific route which currently does the same as
     /suggest/projects (but can change to include other suggestion types).
     
     '''
-    return suggest_projects()
+    return suggest_projects(req_format)
     
 @app.route('/suggest/projects', methods=['GET','POST'])
-def suggest_projects():
+@app.route('/suggest/projects.<req_format>', methods=['GET','POST'])
+def suggest_projects(req_format='json'):
     '''
     Use the suggest package to suggest projects relevant to the incoming
     similar_to parameter. This is the query the user inputs into facetview
@@ -161,10 +189,18 @@ def suggest_projects():
     else:
         from fundfind.suggest import suggest_projects
         try:
-            result = jsonify(suggest_projects(request.values['similar_to']))
+            result = suggest_projects(request.values['similar_to'])
         except ValueError as e:
             result = {'error': 'Suggestions problem. Could not encode suggestions in JSON to send to front-end.'}
-        return result
+        return jsonify(result)
+
+@app.route('/')
+@app.route('/.<req_format>')
+def home(req_format='html'):
+    if req_format == 'json':
+        return jsonify({'options': ['/share_fundopp', '/describe_funder', '/suggest', '/suggest/projects', '/slugify']})
+    return render_template('home/index.html')
+
 
 if __name__ == "__main__":
     fundfind.dao.init_db()

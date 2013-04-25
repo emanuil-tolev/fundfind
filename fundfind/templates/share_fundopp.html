@@ -8,7 +8,12 @@
 
         <h2>Share a funding opportunity</h2>
 		
+        <div class="row-fluid">
         <p class="help-block">... with the world!</p>
+        </div>
+        <div class="row-fluid">
+        <p class="help-block">All contibutions are licensed under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution License v.3.0 Unported</a>.</p>
+        </div>
 
 		<div class="clearfix fortest">
         <label for="name">Funder</label>
@@ -71,6 +76,19 @@
         </div>
         </div>
 		
+        <div class="clearfix">
+        <label for="issue_date">Issue date</label>
+        <div class="input">
+			<input class="span2" type="text" name="issue_date" />
+        <div class="row-fluid">
+            <div class="help-block span6">
+        When was this funding opportunity published? (Or when was this call issued?)
+        
+            </div>
+        </div>
+        </div>
+        </div>
+		
         <div class="clearfix fortest">
         <label for="funds">Funds available</label>
         
@@ -109,19 +127,6 @@
         </div>
         </div>
 
-        <div class="clearfix">
-        <label for="issue_date">Issue date</label>
-        <div class="input">
-			<input class="span2" type="text" name="issue_date" />
-        <div class="row-fluid">
-            <div class="help-block span6">
-        When was this funding opportunity published? (Or when was this call issued?)
-        
-            </div>
-        </div>
-        </div>
-        </div>
-		
 		<div class="clearfix">
         <label for="more_info">Additional information</label>
         <div class="input">
@@ -168,6 +173,20 @@
         </div>
 
         <div class="clearfix">
+        <label for="of_interest_to">Of interest to</label>
+        <div class="input">
+            <input class="span2" type="text" name="of_interest_to" id="of_interest_to"/> 
+            <a id="more_of_interest_to" class="btn" href="">add more</a>
+        <div class="row-fluid">
+            <div class="help-block span6">
+        List countries, organisations, departments or research groups which might be interested in this funding opportunity. Separated by commas.
+        
+            </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="clearfix">
         <label for="submit">&nbsp;</label>
         <div class="input"><input class="btn primary span2" type="submit" 
             name="submit" value="submit" /></div>
@@ -181,6 +200,8 @@
 {% block js_bottom -%}
     {{super()}}
 <script type="text/javascript">
-	use_slugify('title')
+	use_slugify('title');
+    add_more_expand_field('tags');
+    add_more_expand_field('of_interest_to');
 </script>
 {%- endblock js_bottom %}

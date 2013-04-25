@@ -1,6 +1,5 @@
 import re
 from unicodedata import normalize
-from functools import wraps
 
 # derived from http://flask.pocoo.org/snippets/5/ (public domain)
 # changed delimiter to _ instead of - due to ES search problem on the -

@@ -7,18 +7,6 @@ jQuery(document).ready(function() {
  * no matter which page it is on. Copying the relevant HTML is all which will
  * be necessary since the code below runs for all pages.
  */ 
-	// clear the title from the front page search box
-	// or set title if box is empty
-    var setTitle = function(event) {
-		var title = "Let's fund you...";
-		if (jQuery('.frontin').val() == "") {
-			jQuery('.frontin').val(title);
-		} else if (jQuery(this).val() == title) {
-            jQuery(this).val("");
-        }
-    }
-    jQuery('.frontin').focus(setTitle);
-	jQuery('.frontin').blur(setTitle);
 	
 	// "add more" button for Useful links
 	$('#more_links').click( function () {
@@ -31,16 +19,6 @@ jQuery(document).ready(function() {
 		return false; // prevent form submission
 	});
     
-	// "add more" button for Tags
-	$('#more_tags').click( function () {
-		var curwidth = $('#tags').width();
-		/* Another 100 pixels should be good on most devices and the user
-		 * shouldn't even have to click the "add more" button again, but
-		 * they can if they want to - so 100 should be a good increment.
-		 */
-		$('#tags').width(curwidth + 100);
-		return false; // prevent form submission
-	});
 });
 
 function getOuterHTML(selector) {
@@ -77,5 +55,19 @@ function use_slugify(on_which_field) {
 		};
 		
 		$.post(slugify_svc_url, slugify_request_data, slugify_success);
+	});
+}
+
+function add_more_expand_field(to_which_field) {
+	// "add more" button functionality for tags and similar fields which just
+    // expand instead of creating more fields
+	$( '#more_' + to_which_field ).click( function () {
+		var curwidth = $( '#' + to_which_field ).width();
+		/* Another 100 pixels should be good on most devices and the user
+		 * shouldn't even have to click the "add more" button again, but
+		 * they can if they want to - so 100 should be a good increment.
+		 */
+		$( '#' + to_which_field ).width(curwidth + 100);
+		return false; // prevent form submission
 	});
 }

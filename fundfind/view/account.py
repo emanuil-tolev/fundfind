@@ -1,19 +1,20 @@
 import uuid
+from pyes.exceptions import ElasticSearchException
 
 from flask import Blueprint, request, url_for, flash, redirect
 from flask import render_template
 from flask.ext.login import login_user, logout_user
 from flask.ext.wtf import Form, TextField, PasswordField, validators
 
-import fundfind.dao as dao
+from fundfind import dao
+from fundfind import util
 
 blueprint = Blueprint('account', __name__)
 
 
 @blueprint.route('/')
 def index():
-    return 'Accounts'
-
+    return 'Accounts management index route.'
 
 class LoginForm(Form):
     username = TextField('Username', [validators.Required()])
@@ -25,13 +26,22 @@ def login():
     if request.method == 'POST' and form.validate():
         password = form.password.data
         username = form.username.data
-        user = dao.Account.get(username)
+        user = None
+
+        try:
+            user = dao.Account.get(username)
+        except ElasticSearchException:
+            pass # the else below will catch it
+            # Not putting a specific message here since we don't want login
+            # attempts to know they've got an existing username, but the
+            # wrong password!
+
         if user and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back', 'success')
             return redirect(url_for('home'))
         else:
-            flash('Incorrect email/password', 'error')
+            flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
         flash('Invalid form', 'error')
     return render_template('account/login.html', form=form)
@@ -72,7 +82,7 @@ def register():
             organisation=form.organisation.data,
             department=form.department.data,
             research_group=form.research_group.data,
-            interests=form.interests.data
+            interests=util.clean_list( form.interests.data.split(',') )
         )
         account.set_password(form.password.data)
         account.save()

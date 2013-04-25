@@ -1,11 +1,23 @@
 from parsedatetime import parsedatetime as pdt
 
-import urllib2
 from datetime import datetime
-from cStringIO import StringIO
 
 import fundfind.dao
 import fundfind.util as util
+
+
+# inspired by http://oag.cottagelabs.com/developers/api
+CROWDSOURCE_CONTRIB_LICENSE = {
+    "type": "cc-by",
+    "version": "3.0",
+    "url": "http://creativecommons.org/licenses/by/3.0/",
+    "title": "Creative Commons Attribution",
+    'BY': True,
+    'NC': False,
+    'SA': False,
+    'ND': False 
+
+}
 
 class Importer(object):
     def __init__(self, owner):
@@ -31,6 +43,7 @@ class Importer(object):
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
+            "license": CROWDSOURCE_CONTRIB_LICENSE
         }
         
         fundfind.dao.Funder.upsert(record)
@@ -45,22 +58,22 @@ class Importer(object):
             useful_links.append(util.prep_link(link))
             
         record = {
+            "funder": request.values.get("funder", ''),
             "title": request.values.get("title", ''),
-            "short_desc": request.values.get('unique_title', util.slugify(request.values.get("title", '')) ),
+            "unique_title": util.slugify(request.values.get("title", '')),
             "url": util.prep_link(request.values.get("url",''), endslash=True),
-            "description": request.values.get("description",''),
-#            "issue_date": util.str2isodt(request.values.get('issue_date','')),
-#            "closing_date": util.str2isodt(request.values.get('closing_date','')),
+            "description": request.values.get("more_info",''),
             "issue_date": request.values.get('issue_date',''),
             "closing_date": request.values.get('closing_date',''),
             "funds": request.values.get('funds',''),
             "funds_exactly_or_upto": request.values.get('funds_exactly_or_upto',''),
-            "more_info": request.values.get('more_info',''),
             "useful_links": useful_links,
             "tags": util.clean_list(request.values.get("tags",'').split(",")), 
+            "of_interest_to": util.clean_list(request.values.get("of_interest_to",'').split(",")), 
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
+            "license": CROWDSOURCE_CONTRIB_LICENSE
         }
         
         fundfind.dao.FundingOpp.upsert(record)

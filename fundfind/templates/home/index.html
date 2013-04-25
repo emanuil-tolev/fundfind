@@ -7,37 +7,51 @@
         <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - <a href="{{ url_for('share_fundopp') }}">share</a> and <a href="{{ url_for('search') }}">look for funding!</p>
       </div>
 
-      <div class="row">
-        <div class="span4 column">
+      <div class="row-fluid">
+        <div class="span3 column" style="margin-left:0;">
           <div class="alert block-message alert-info">
           <h2>Browse</h2>
           <p>Have a look at the funding opportunities we've got. Advanced search.</p>
-          <p><a href="/browse" class="btn">Browse &raquo;</a></p>
+          <p><a href="/search" class="btn">Browse &raquo;</a></p>
           </div>
         </div>
-        <div class="span4 column">
+        <div class="span3 column">
           <div class="alert block-message alert-info">
           <h2>Tell</h2>
-          <p>Share funding opportunities (or record them only for yourself)</p>
-          <p><a href="/submit" class="btn">Submit &raquo;</a></p>
+          <p>Share funding opportunities</p>
+          <p><a href="/share_fundopp" class="btn">Share Opportunities &raquo;</a></p>
           </div>
         </div>
-        <div class="span4 column">
+        <div class="span3 column">
+          <div class="alert block-message alert-info">
+          <h2>Tell</h2>
+          <p>Share information about funders</p>
+          <p><a href="/describe_funder" class="btn">Describe Funders &raquo;</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span3 column">
           <div class="alert block-message alert-info">
           <h2>My account</h2>
-          <p>Saved searches, favourite opportunities, visualisations and settings.</p>
-          <p><a href="/account" class="btn">My account &raquo;</a></p>
+          <p>View your account information.</p>
+          <p>
+          {% if current_user.is_anonymous() %}
+            You have to be logged in in order to take advantage of this feature.
+          {% else %}
+            <a href="/account/{{current_user.id}}" class="btn">My account &raquo;</a>
+          {% endif %}
+          </p>
           </div>
         </div>
-        <div class="span4 column">
+        <div class="span3 column">
           <div class="alert block-message alert-info">
           <h2>Feedback</h2>
           <p>How are we doing?</p>
 		  <br />
 		  <br />
-          <p><a href="/feedback" class="btn">Feedback &raquo;</a></p>
+          <p><a href="https://github.com/emanuil-tolev/fundfind/issues/" target="_blank" class="btn">Feedback &raquo;</a></p>
           </div>
         </div>
       </div>
-      
 {% endblock %}

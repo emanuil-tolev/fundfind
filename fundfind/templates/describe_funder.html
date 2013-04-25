@@ -10,6 +10,9 @@
 
 		<div class="row-fluid">
         <p class="help-block span6">... which provides funding for scholarly endeavours and activities such as research.</p>
+        </div>
+		<div class="row-fluid">
+        <p class="help-block">All contibutions are licensed under the <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution License v.3.0 Unported</a>.</p>
 		</div>
 		
         <div class="clearfix fortest">
@@ -119,3 +122,10 @@
     </form>
 </div>
 {% endblock %}
+
+{% block js_bottom -%}
+    {{super()}}
+<script type="text/javascript">
+    add_more_expand_field('tags');
+</script>
+{%- endblock js_bottom %}

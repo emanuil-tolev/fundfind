@@ -6,21 +6,22 @@
 
 <ul>
 <li>API key: {{current_user['api_key']}}</li>
+<li>E-mail: {{current_user['email']}}</li>
+<li>Country: {{current_user['country']}}</li>
+<li>Organisation: {{current_user['organisation']}}</li>
+<li>Department: {{current_user['department']}}</li>
+<li>Research Group: {{current_user['research_group']}}</li>
+<li>Research interests:
+    {% if current_user['interests'] %}
+        <ul>
+        {% for interest in current_user['interests'] %}
+            <li>{{ interest }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</li>
 </ul>
 
-<h3>Your collections:</h3>
-{% if current_user['collections']|length == 0 %}
-<p>You have no collections yet. <a href="/upload">Create one!</a></p>
-{% else %}
-<ul>
-{% for coll in current_user['collections'] %}
-    <li><a href="/{{current_user['id']}}/{{coll['slug']}}">{{coll['label']}}</a> - {{coll['records']}} records
-    {% if 'source' in coll %}
-     - from <a href="{{coll['source']}}">{{coll['source']}}
-    {% endif %}
-    </a></li>
-{% endfor %}
-</ul>
-{% endif %}
+<h3><a href="#">Click here</a> to view your contributions.</h3>
 
 {% endblock %}

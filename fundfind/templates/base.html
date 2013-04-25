@@ -36,10 +36,10 @@
    		 <div class="nav-collapse collapse">
    		 	<!-- .nav, .navbar-search, .navbar-form, etc -->
 	          <ul class="nav nav-tabs">
-			<li {% if active_page == 'browse' %}class="active"{% endif %}><a href="/search">Browse</a></li>
+			<li {% if active_page == 'search' %}class="active"{% endif %}><a href="/search">Search</a></li>
 			<li {% if active_page == 'describe_funder' %}class="active"{% endif %}><a href="/describe_funder">Describe a Funder</a></li>
 			<li {% if active_page == 'share_fundopp' %}class="active"{% endif %}><a href="/share_fundopp">Share a funding opportunity</a></li>
-			<li><a href="https://github.com/emanuil-tolev/fundfind/issues/">Feedback</a></li>
+			<li><a href="https://github.com/emanuil-tolev/fundfind/issues/" target="_blank">Feedback</a></li>
 	          </ul>
           <ul class="nav pull-right">
             {% if current_user.is_anonymous() %}
