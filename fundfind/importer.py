@@ -43,7 +43,8 @@ class Importer(object):
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
-            "license": CROWDSOURCE_CONTRIB_LICENSE
+            "license": CROWDSOURCE_CONTRIB_LICENSE,
+            "origin": "crowdsourced"
         }
         
         fundfind.dao.Funder.upsert(record)
@@ -73,7 +74,8 @@ class Importer(object):
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
-            "license": CROWDSOURCE_CONTRIB_LICENSE
+            "license": CROWDSOURCE_CONTRIB_LICENSE,
+            "origin": "crowdsourced"
         }
         
         fundfind.dao.FundingOpp.upsert(record)

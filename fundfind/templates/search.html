@@ -28,14 +28,17 @@ jQuery(document).ready(function($) {
     search_url: 'http://localhost:9200/fundfind/_search?',
     search_index: 'elasticsearch',
     datatype: 'json',
-
+	
     facets: [
         {'field': 'name', 'display': 'Funder Name'},
         {'field': 'title', 'display': 'Opportunity Title'},
         {'field': '_type', 'display': 'Record Type'},
+		{'field': 'origin', 'display': 'Origin'},
+		{'field': 'license', 'display': 'License'},
+		{'field': 'owner', 'display': 'Submitter'},
     ],
 	
-    search_sortby: [{'display':'name', 'field':'name.exact'},{'display':'title','field':'title.exact'}],
+    search_sortby: [{'display':'Funder name', 'field':'name.exact'},{'display':'Opportunity title','field':'title.exact'}],
     searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder Name','field':'name'}],
     paging: {
       size: 10
@@ -68,6 +71,12 @@ jQuery(document).ready(function($) {
 		],
 		[
 			{
+				"pre": "<u>URL</u>: ",
+				"field": "url",
+			}
+		],
+		[
+			{
 				"field": "description",
 			}
 		],
@@ -94,7 +103,39 @@ jQuery(document).ready(function($) {
 			    "pre": "<u>Useful links</u>: ",
 				"field": "useful_links",
 			}
-		]
+		],
+		[
+			{
+			    "pre": "<strong>Username / ID</strong>: ",
+				"field": "id",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Interests</u>: ",
+				"field": "interests",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Country</u>: ",
+				"field": "country",
+			}
+		],
+		[
+			{
+			    "pre": "<u>Affiliation</u>: ",
+				"field": "organisation",
+				"post": ", "
+			},
+			{
+				"field": "department",
+				"post": ", "
+			},
+			{
+				"field": "research_group"
+			}
+		],
 	]
 	
   });

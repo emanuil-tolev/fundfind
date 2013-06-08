@@ -1,7 +1,8 @@
 import re
 import json
+from pyes.exceptions import ElasticSearchException
 
-from flask import Flask, jsonify, json, request, redirect, abort, make_response
+from flask import Flask, jsonify, json, request, redirect, abort, make_response, url_for
 from flask import render_template, flash
 from flask.views import View, MethodView
 from flask.ext.login import login_user, current_user
@@ -10,6 +11,7 @@ import fundfind.dao
 import fundfind.importer
 from fundfind.config import config
 from fundfind.core import app, login_manager
+from fundfind.view.account import logout
 from fundfind.view.account import blueprint as account
 
 app.register_blueprint(account, url_prefix='/account')
@@ -18,7 +20,11 @@ app.register_blueprint(account, url_prefix='/account')
 # NB: the decorator appears to kill the function for normal usage
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
-    out = fundfind.dao.Account.get(userid)
+    try:
+        out = fundfind.dao.Account.get(userid)
+    except ElasticSearchException:
+        flash('Your account was deleted while you were logged in. (?!)', 'error')
+        return None
     return out
 
 @app.context_processor

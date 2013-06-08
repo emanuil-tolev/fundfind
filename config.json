@@ -49,51 +49,6 @@
         # }
     # ],
 
-    
-    # functions to perform on particular result fields on display - these are defined in iomanager
-    "display_value_functions" : {
-        "author":{"authorify":{}},
-        "collection": {"collectionify":{}},
-        "links": {"bibsoup_links":{}}
-    },
-
-    # a dict of the ES mappings. identify by name, and include name as first object name
-    "mappings" : {
-        "record" : {
-            "record" : {
-                "dynamic_templates" : [
-                    {
-                        "default" : {
-                            "match" : "*",
-                            "match_mapping_type": "string",
-                            "mapping" : {
-                                "type" : "multi_field",
-                                "fields" : {
-                                    "{name}" : {"type" : "{dynamic_type}", "index" : "analyzed", "store" : "no"},
-                                    "exact" : {"type" : "{dynamic_type}", "index" : "not_analyzed", "store" : "yes"}
-                                }
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        "collection" : {
-            "collection" : {
-                "dynamic_templates" : [
-                    {
-                        "default" : {
-                            "match" : "*",
-                            "mapping" : {
-                                "index" : "not_analyzed"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    },
-
     # identifier for how non-analyzed fields for faceting are differenetiated in the mappings
     "facet_field" : ".exact"
 }
