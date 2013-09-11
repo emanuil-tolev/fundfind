@@ -3,8 +3,7 @@
     "service_name" : "FundFind",
 	
 	# admin e-mail addresses
-	# TODO enable when publically deployed
-	#"ADMINS": ['emanuil@cottagelabs.com'],
+	"ADMINS": ['emanuil@cottagelabs.com'],
 
     # provide site address URL if you need to overwrite what it might otherwise be calculated to be
     #"SITE_URL" : "",

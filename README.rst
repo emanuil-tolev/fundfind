@@ -3,18 +3,18 @@ fundfind - an Open way to share, visualise and map out scholarly funding opportu
 How It Works
 ============
 
-Up and running at TODO PUT URL HERE WHEN IT'S DEPLOYED
+Up and running at http://fundfind.cottagelabs.com
 
 Just hop in and search for (or share!) funding opportunities!
 
 You can also look at, download and reuse nice visualisations and maps of scholarly / scientific funding across the world.
 
-FundFind also exposes all the funding opportunities it knows about via a machine-friendly ReSTful API under an TODO DECIDE ON LICENCE FOR CODE AND DATA AND INCLUDE THE DATA ONE HERE Licence. So you can integrate FundFind into YOUR software!
+FundFind also exposes **all** the funding opportunities it knows about via a machine-friendly ReSTful API under a Creative Commons Attribution 3.0 License. So you can integrate FundFind data into your software. A "permissions" feature is planned however, allowing people to submit funding information to a running fundfind instance for private purposes only (e.g. sharing only with a certain group of users). CC-BY will then become the default option.
 
 Install
 =======
 
-NOTE: this is only for people who want to run their own instance of FundFind. If you just want to find/share/visualise funding information, go to TODO PUT URL HERE WHEN IT'S DEPLOYED.
+NOTE: this is only for people who want to run their own instance of FundFind. If you just want to find/share/visualise funding information, go to http://fundfind.cottagelabs.com .
 
 1. Install stuff:
   - Python_ (2.7+ preferable; NOT TESTED on 3.x)
