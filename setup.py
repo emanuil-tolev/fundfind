@@ -17,6 +17,7 @@ setup(
         'Programming Language :: Python',
     ],
     install_requires = [
+        'werkzeug==0.8.3',
         'Flask==0.9',
         'Flask-Login==0.1.3',
         'Flask-WTF==0.8.2',
