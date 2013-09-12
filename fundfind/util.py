@@ -18,7 +18,13 @@ _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 def slugify(text, delim=u'_'):
     """Generates a slightly worse ASCII-only slug."""
     result = []
-    text = unicode(text, errors="ignore")
+
+    # take care of unicode errors due to Werkzeug changes
+    try:
+        text = unicode(text, errors="ignore")
+    except TypeError:
+        pass # text is already a unicode object, no need to convert it
+
     for word in _punct_re.split(text.lower()):
         word = normalize('NFKD', word).encode('ascii', 'ignore')
         if word:
