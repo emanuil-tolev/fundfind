@@ -33,6 +33,7 @@ class Importer(object):
             useful_links.append(util.prep_link(link))
             
         record = {
+            "id": util.slug_id(request.values['name']),
             "name": request.values['name'], # guaranteed to have 'name'
             "homepage": util.prep_link(request.values.get("homepage",''), endslash=True),
             "description": request.values.get("description",''),
@@ -60,8 +61,8 @@ class Importer(object):
             
         record = {
             "funder": request.values.get("funder", ''),
-            "title": request.values.get("title", ''),
-            "unique_title": util.slugify(request.values.get("title", '')),
+            "title": request.values["title"],
+            "id": util.slug_id(request.values["title"]),
             "url": util.prep_link(request.values.get("url",''), endslash=True),
             "description": request.values.get("more_info",''),
             "issue_date": request.values.get('issue_date',''),
