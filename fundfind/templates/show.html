@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{# Only fields which are given a name in the labels dict will be shown. #}
+{# Additionally fiels will only be shown if they are present in the data
+and are not empty.#}
+{% set labels = {
+    'title': 'Title',
+    'url': 'URL',
+    'funder': 'Funding Organisation',
+    'description': 'Description',
+    'closing_date': 'Closing date',
+    'issue_date': 'Issue date',
+    'funds': 'Funds available',
+    'useful_links': 'Useful Links',
+    'tags': 'Tags',
+    'of_interest_to': 'Of interest to',
+    'owner': 'Submitted by',
+    'license': 'License',
+    'origin': 'Where did this record come from originally?',
+    'created': 'Date created',
+    'modified': 'Date modified',
+} %}
+
+{% set field_order = ['title', 'url', 'funder', 'description',
+'closing_date', 'issue_date', 'funds', 'useful_links', 'tags',
+'of_interest_to', 'owner', 'license', 'origin', 'created', 'modified']
+%}
+
+{% block content %}
+
+<div class="row-fluid">
+    {% for field in field_order %}
+    {% if field in labels %}
+    {% set label = labels[field] %}
+
+    {# Data needs to be present and not empty. #}
+    {% if field in o and dict.get(o.data, field) %}
+    {# fundfind.dao.DomainObject.get() overrides the built-in dictionary
+    .get() method, so this calls the .get method of the dict class
+    itself #}
+        {% set value = o[field] %}
+        <h3>{{ label }}</h3>
+        <p>
+            {% if field == 'license' %}
+                {{ value['title'] }} {{ value.get('version','') }} {{ value.get('url', '') }}
+            {% elif isinstance(value, list) %}
+                {{ value|join(', ') }}
+            {% elif field == 'funds' %}
+                {{ dict.get(o.data, 'funds_exactly_or_upto') }} {{ value }}
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

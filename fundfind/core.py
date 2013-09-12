@@ -9,6 +9,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     configure_app(app)
+    add_jinja_globals(app)
     setup_error_email(app)
     login_manager.setup_app(app)
     return app
@@ -31,5 +32,13 @@ def setup_error_email(app):
                                    ADMINS, 'FundFind error')
         mail_handler.setLevel(logging.error)
         app.logger.addHandler(mail_handler)
+
+def add_jinja_globals(app):
+    add_to_globals = {
+        'isinstance': isinstance,
+        'list': list,
+        'dict': dict
+    }
+    app.jinja_env.globals.update(**add_to_globals)
 
 app = create_app()

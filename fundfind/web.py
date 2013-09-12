@@ -66,6 +66,11 @@ def content(path):
 def search():
     return render_template('search.html', active_page='search')
 
+@app.route('/funding_opportunities/<path:path>')
+def show_funding_opportunity(path):
+    renderobj = fundfind.dao.FundingOpp.get(path)
+    return render_template('show.html', o=renderobj)
+
 class DescribeFunderView(MethodView):
     '''Submit information about a funding organisation'''
     def get(self, req_format='html'):
