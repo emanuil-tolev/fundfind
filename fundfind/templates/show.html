@@ -42,9 +42,18 @@ and are not empty.#}
         <h3>{{ label }}</h3>
         <p>
             {% if field == 'license' %}
-                {{ value['title'] }} {{ value.get('version','') }} {{ value.get('url', '') }}
+            {{ value['title'] }} {{ value.get('version','') }}
+                <a href="{{ value.get('url', '') }}" target="_blank">{{ value.get('url', '') }}</a>
             {% elif isinstance(value, list) %}
+                {% if field == 'useful_links' %}
+                    <ul>
+                    {% for link in value %}
+                        <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
                 {{ value|join(', ') }}
+                {% endif %}
             {% elif field == 'funds' %}
                 {{ dict.get(o.data, 'funds_exactly_or_upto') }} {{ value }}
             {% else %}
