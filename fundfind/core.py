@@ -9,7 +9,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     configure_app(app)
-    add_jinja_globals(app)
+    configure_jinja(app)
     setup_error_email(app)
     login_manager.setup_app(app)
     return app
@@ -33,7 +33,8 @@ def setup_error_email(app):
         mail_handler.setLevel(logging.error)
         app.logger.addHandler(mail_handler)
 
-def add_jinja_globals(app):
+def configure_jinja(app):
+    # expore some more objects to the templates
     add_to_globals = {
         'isinstance': isinstance,
         'list': list,
