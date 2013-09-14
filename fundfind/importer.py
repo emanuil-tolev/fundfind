@@ -32,8 +32,9 @@ class Importer(object):
         for link in tmpl:
             useful_links.append(util.prep_link(link))
             
+        id_ = util.slug_id(request.values['name'])
         record = {
-            "id": util.slug_id(request.values['name']),
+            "id": id_,
             "name": request.values['name'], # guaranteed to have 'name'
             "homepage": util.prep_link(request.values.get("homepage",''), endslash=True),
             "description": request.values.get("description",''),
@@ -49,6 +50,7 @@ class Importer(object):
         }
         
         fundfind.dao.Funder.upsert(record)
+        return id_
         
     def share_fundopp(self, request):
         '''Import information about a funding opportunity into the index.'''
@@ -58,11 +60,12 @@ class Importer(object):
         useful_links = []
         for link in tmpl:
             useful_links.append(util.prep_link(link))
-            
+        
+        id_ = util.slug_id(request.values["title"])
         record = {
             "funder": request.values.get("funder", ''),
             "title": request.values["title"],
-            "id": util.slug_id(request.values["title"]),
+            "id": id_,
             "url": util.prep_link(request.values.get("url",''), endslash=True),
             "description": request.values.get("more_info",''),
             "issue_date": request.values.get('issue_date',''),
@@ -80,3 +83,4 @@ class Importer(object):
         }
         
         fundfind.dao.FundingOpp.upsert(record)
+        return id_

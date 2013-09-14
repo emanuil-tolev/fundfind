@@ -136,12 +136,12 @@ class ShareFundoppView(MethodView):
             
         if request.values.has_key('title') and request.values['title']:
             importer = fundfind.importer.Importer(owner=current_user)
-            importer.share_fundopp(request)
+            id_ = importer.share_fundopp(request)
             if req_format == 'json':
                 return jsonify({'ok': True})
             else:
                 flash('Successfully received funding opportunity information')
-                return redirect('/')
+                return redirect(url_for("show_funding_opportunity", path=id_))
         else:
             error_msg = 'We need the title of the funding opportunity'
             if req_format == 'json':
