@@ -80,6 +80,7 @@ class DomainObject(UserDict.IterableUserDict):
             data['modified'] = datetime.now().isoformat()
             
         conn.index(data, db, cls.__type__, id_)
+        conn.refresh()
         return cls(**data)
 
     @classmethod
