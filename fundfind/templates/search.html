@@ -41,6 +41,9 @@ jQuery(document).ready(function($) {
     paging: {
       size: 10
     },
+    resultwrap_start: '<tr><td class="span11">',
+    resultwrap_end:'</td><td class="span1"><a href="{{ url_for("show_funding_opportunity", path="FACETVIEW_REPLACE_START id FACETVIEW_REPLACE_END") }}" target="_blank">Read more</a></td></tr>',
+    resultwrap_replace_text: true,
 	result_display: [
 		[
 			{
@@ -96,13 +99,13 @@ jQuery(document).ready(function($) {
 				"field": "useful_links",
 			}
 		],
-		[
+/*		[
 			{
 			    "pre": "<strong>Username / ID</strong>: ",
 				"field": "id",
 			}
 		],
-		[
+*/		[
 			{
 			    "pre": "<u>Interests</u>: ",
 				"field": "interests",
