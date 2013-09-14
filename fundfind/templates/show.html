@@ -56,6 +56,8 @@ and are not empty.#}
                 {% endif %}
             {% elif field == 'funds' %}
                 {{ dict.get(o.data, 'funds_exactly_or_upto') }} {{ value }}
+            {% elif field == 'url' %}
+                <a href="{{ value }}" target="_blank">{{ value }}</a>
             {% else %}
                 {{ value }}
             {% endif %}
@@ -66,3 +68,13 @@ and are not empty.#}
     {% endfor %}
 </div>
 {% endblock %}
+
+{% block js_bottom %}
+{{super()}}
+<!-- linkify the content above anyway, even though we take pains to
+generate links where we know about them in the template above (just so
+this page works without javascript) -->
+<script type="text/javascript">
+    $('.content').linkify(function(links){ links.attr('target','_blank'); })
+</script>
+{% endblock js_bottom %}
