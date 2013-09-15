@@ -152,18 +152,20 @@ class ShareFundoppView(MethodView):
 
 app.add_url_rule('/share_fundopp', view_func=ShareFundoppView.as_view('share_fundopp'))
 app.add_url_rule('/share_fundopp.<req_format>', view_func=ShareFundoppView.as_view('share_fundopp'))
+app.add_url_rule('/share_fundopp/<path:path>', view_func=ShareFundoppView.as_view('share_fundopp'))
 
 @app.route('/slugify', methods=['GET','POST'])
 @app.route('/slugify.<req_format>', methods=['GET','POST'])
 def expose_slugify(req_format=None):
-    '''Expose the slugify utility function to the world (to be used in 
+    '''
+    Expose the slugify utility function to the world (to be used in 
     particular by AJAX requests showing the user what their string will look
     like after it is slugified.
     
     Used for generating unique identifiers from titles (e.g. of funding
-    opportunities) and other such strings.'''
-    # if the expected parameter is not found in the request, issue a
-    # 400 Bad Request response
+    opportunities) and other such strings.
+    '''
+
     if not request.values.has_key('make_into_slug'):
         abort(400)
     else:
@@ -209,6 +211,8 @@ def suggest_projects(req_format='json'):
 @app.route('/.<req_format>')
 def home(req_format='html'):
     if req_format == 'json':
+        # TODO enumerate the available routes programmatically
+        # TODO implement actual OPTIONS
         return jsonify({'options': ['/share_fundopp', '/describe_funder', '/suggest', '/suggest/projects', '/slugify']})
     return render_template('home/index.html')
 
