@@ -6,6 +6,11 @@ form{
     display:inline;
 }
 
+a.important {
+    font-size: 110%;
+    font-weight: bold;
+}
+
 /* Remove bottom margin from lists within tables. */
 td ul, ol {
 	margin-bottom: 0;

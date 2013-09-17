@@ -23,7 +23,7 @@ class Importer(object):
     def __init__(self, owner):
         self.owner = owner
 
-    def describe_funder(self, request):
+    def describe_funder(self, request, id_=None):
         '''Import information about a funder into the index.'''
         
         
@@ -32,11 +32,13 @@ class Importer(object):
         for link in tmpl:
             useful_links.append(util.prep_link(link))
             
-        id_ = util.slug_id(request.values['name'])
+        if not id_:
+            id_ = util.slug_id(request.values['name'])
+
         record = {
             "id": id_,
             "name": request.values['name'], # guaranteed to have 'name'
-            "homepage": util.prep_link(request.values.get("homepage",''), endslash=True),
+            "homepage": util.prep_link(request.values.get("homepage",'')),
             "description": request.values.get("description",''),
             "interested_in": request.values.get("interested_in",''),
             "policies": request.values.get("policies",''),
@@ -52,7 +54,7 @@ class Importer(object):
         fundfind.dao.Funder.upsert(record)
         return id_
         
-    def share_fundopp(self, request):
+    def share_fundopp(self, request, id_=None):
         '''Import information about a funding opportunity into the index.'''
         
         
@@ -61,12 +63,14 @@ class Importer(object):
         for link in tmpl:
             useful_links.append(util.prep_link(link))
         
-        id_ = util.slug_id(request.values["title"])
+        if not id_:
+            id_ = util.slug_id(request.values["title"])
+
         record = {
             "funder": request.values.get("funder", ''),
             "title": request.values["title"],
             "id": id_,
-            "url": util.prep_link(request.values.get("url",''), endslash=True),
+            "url": util.prep_link(request.values.get("url",'')),
             "description": request.values.get("more_info",''),
             "issue_date": request.values.get('issue_date',''),
             "closing_date": request.values.get('closing_date',''),

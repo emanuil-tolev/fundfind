@@ -52,21 +52,15 @@ def clean_list(list):
     '''
     return [clean_item for clean_item in [item.strip() for item in list] if clean_item]
     
-def prep_link(link, endslash=False):
+def prep_link(link):
     '''Prepare a string which is meant to be a link (HTTP URL) for
     indexing. Puts http:// at the front if the string it's passed does not
     already start with http:// or https://.
     
-    The endslash parameter is a Boolean which controls whether a forward
-    slash '/' will be added to the string if the string doesn't already
-    end with a '/'.
-    
     Returns an empty string if passed an empty string (so you will never
-    end up with 'http:///' or something of the sort).
+    end up with 'http://').
     '''
     if link:
-        if endslash and not link.endswith('/'):
-            link += '/'
         if not ( link.startswith('http://') or link.startswith('https://') ):
             link = 'http://' + link
         

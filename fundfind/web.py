@@ -114,7 +114,7 @@ app.add_url_rule('/describe_funder.<req_format>', view_func=DescribeFunderView.a
 
 class ShareFundoppView(MethodView):
     '''Submit information about a funding opportunity'''
-    def get(self, req_format='html'):
+    def get(self, req_format='html', path=None):
         if current_user.is_anonymous():
             if req_format == 'json':
                 return jsonify({'error': 'You need to specify api_key in the request data. Only registered users can submit funder or funding opportunity data.'})
@@ -123,20 +123,27 @@ class ShareFundoppView(MethodView):
                 return redirect('/account/login')
 
         if request.values.get("name") is not None:
-            return self.post(req_format)
+            return self.post(req_format, path)
 
         if req_format == 'json':
             return jsonify({'error': 'You need to POST to this URL if using the API.'})
-        else:
-            return render_template('share_fundopp.html', active_page='share_fundopp')
+
+        renderobj = None
+        if path:
+            renderobj = fundfind.dao.FundingOpp.get(path)
+        return render_template('share_fundopp.html', active_page='share_fundopp', o=renderobj)
 
     def post(self, req_format='html'):
         if current_user.is_anonymous():
             abort(401)
-            
+        
         if request.values.has_key('title') and request.values['title']:
             importer = fundfind.importer.Importer(owner=current_user)
-            id_ = importer.share_fundopp(request)
+            if 'id' in request.values:
+                id_ = importer.share_fundopp(request, id_=request.values['id'])
+            else:
+                id_ = importer.share_fundopp(request)
+
             if req_format == 'json':
                 return jsonify({'ok': True})
             else:
