@@ -1,3 +1,3 @@
 [submodule "fundfind/static/vendor/facetview"]
 	path = fundfind/static/vendor/facetview
-	url = git@github.com:emanuil-tolev/facetview.git
+	url = https://github.com/emanuil-tolev/facetview.git
