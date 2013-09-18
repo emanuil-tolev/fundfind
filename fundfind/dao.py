@@ -18,11 +18,8 @@ def init_db():
         pass
 
 def get_conn():
-    host = "127.0.0.1:9200"
-    db_name = "fundfind"
-#    host = config["ELASTIC_SEARCH_HOST"]
-#    db_name = config["ELASTIC_SEARCH_DB"]
-#    print host, db_name
+    host = str(config["ELASTIC_SEARCH_HOST"])
+    db_name = str(config["ELASTIC_SEARCH_DB"])
     conn = pyes.ES([host])
     return conn, db_name
 

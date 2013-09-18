@@ -64,7 +64,10 @@ def content(path):
 # Search / faceted browsing interface
 @app.route('/search', methods=['GET'])
 def search():
-    return render_template('search.html', active_page='search')
+    return render_template('search.html', active_page='search',
+        es_host=config['ELASTIC_SEARCH_HOST'],
+        es_index=config['ELASTIC_SEARCH_DB']
+    )
 
 @app.route('/funding_opportunities/<path:path>')
 def show_funding_opportunity(path):
