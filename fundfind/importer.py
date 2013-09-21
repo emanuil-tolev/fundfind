@@ -1,5 +1,3 @@
-from parsedatetime import parsedatetime as pdt
-
 from datetime import datetime
 
 import fundfind.dao
