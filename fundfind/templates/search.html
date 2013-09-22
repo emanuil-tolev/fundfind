@@ -28,16 +28,18 @@ jQuery(document).ready(function($) {
     datatype: 'json',
 	
     facets: [
-        {'field': 'name', 'display': 'Funder Name'},
+        {'field': 'funder', 'display': 'Funder'},
         {'field': 'title', 'display': 'Opportunity Title'},
         {'field': '_type', 'display': 'Record Type'},
 		{'field': 'origin', 'display': 'Origin'},
 		{'field': 'license', 'display': 'License'},
 		{'field': 'owner', 'display': 'Submitter'},
+		{'field': 'tags', 'display': 'Tags'},
+		{'field': 'of_interest_to', 'display': 'Of interest to'},
     ],
 	
-    search_sortby: [{'display':'Funder name', 'field':'name.exact'},{'display':'Opportunity title','field':'title.exact'}],
-    searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder Name','field':'name'}],
+    search_sortby: [{'display':'Funder', 'field':'funder.exact'},{'display':'Opportunity title','field':'title.exact'}],
+    searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder','field':'funder'}],
     paging: {
       size: 10
     },
@@ -68,11 +70,6 @@ jQuery(document).ready(function($) {
 			{
 				"pre": "<u>URL</u>: ",
 				"field": "url",
-			}
-		],
-		[
-			{
-				"field": "description",
 			}
 		],
 		[
