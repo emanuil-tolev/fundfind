@@ -40,7 +40,7 @@ and are not empty.#}
     .get() method, so this calls the .get method of the dict class
     itself #}
         {% set value = o[field] %}
-        <h3>{{ label }}</h3>
+        <h3 id="{{ field }}">{{ label }}</h3>
         <p>
             {% if field == 'license' %}
             {{ value['title'] }} {{ value.get('version','') }}
