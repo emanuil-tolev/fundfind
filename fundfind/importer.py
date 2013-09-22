@@ -85,6 +85,11 @@ class Importer(object):
             "license": CROWDSOURCE_CONTRIB_LICENSE,
             "origin": "crowdsourced"
         }
+
+        # cause ElasticSearch exceptions if null or empty string
+        # so just remove them from the document
+        if not record['issue_date']: del record['issue_date']
+        if not record['closing_date']: del record['closing_date']
         
         fundfind.dao.FundingOpp.upsert(record)
         return id_
