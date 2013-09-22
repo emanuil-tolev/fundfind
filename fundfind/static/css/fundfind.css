@@ -49,8 +49,20 @@ input.frontin:hover{
 }
 
 /************************************
-  * Submitting a new test/description page
+  * Submitting a funding opportunity / funder
   ***********************************/
+form.wholepage label {
+    font-weight: bold;
+}
+
+form.wholepage.form-horizontal fieldset > [class*="row-fluid"] {
+    margin-top: 1em;
+}
+
+form.form-horizontal .horizontal-element .help-block {
+    margin-top: 0;
+}
+
 div.input-grp-for-addmore {
     float: left;
     margin-right: 0.25em;
@@ -74,10 +86,17 @@ textarea.large {
 	height: 200px;
 }
 
-label {
+footer {
 	margin-top: 2em;
 }
 
-footer {
-	margin-top: 2em;
+/* specifically for submitting a new funding opportunity */
+form#share_fundopp_form .row-fluid > [class*="span"] {
+    margin-left: 0;
+}
+
+
+/* specifically for submitting info about a funder */
+form#funderform label {
+    margin-top: 1em;
 }

@@ -68,6 +68,8 @@ function add_more_expand_field(to_which_field) {
 		 * they can if they want to - so 100 should be a good increment.
 		 */
 		$( '#' + to_which_field ).width(curwidth + 100);
+		$( '#' + to_which_field + '_container' ).width(curwidth + 120);
+		$( '#' + to_which_field + '_description' ).addClass('controls');
 		return false; // prevent form submission
 	});
 }
