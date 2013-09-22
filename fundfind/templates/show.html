@@ -56,11 +56,11 @@ and are not empty.#}
                 {{ value|join(', ') }}
                 {% endif %}
             {% elif field == 'funds' %}
-                {{ dict.get(o.data, 'funds_exactly_or_upto') }} {{ value }}
+                {{ dict.get(o.data, 'funds_exactly_or_upto') }} &pound;{{ value }}
             {% elif field == 'url' %}
                 <a href="{{ value }}" target="_blank">{{ value }}</a>
             {% else %}
-                {{ value }}
+                {{ value | nl2br | safe }}
             {% endif %}
         </p>
     {% endif %}

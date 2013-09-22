@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from jinja2 import Markup
+
 import fundfind.dao
 import fundfind.util as util
 
@@ -69,9 +71,9 @@ class Importer(object):
             "title": request.values["title"],
             "id": id_,
             "url": util.prep_link(request.values.get("url",'')),
-            "description": request.values.get("more_info",''),
-            "issue_date": request.values.get('issue_date',''),
-            "closing_date": request.values.get('closing_date',''),
+            "description": Markup.escape(request.values.get("more_info",'')),
+            "issue_date": request.values.get('issue_date',None),
+            "closing_date": request.values.get('closing_date',None),
             "funds": request.values.get('funds',''),
             "funds_exactly_or_upto": request.values.get('funds_exactly_or_upto',''),
             "useful_links": useful_links,
