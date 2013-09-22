@@ -226,14 +226,17 @@ def home(req_format='html'):
         return jsonify({'options': ['/share_fundopp', '/describe_funder', '/suggest', '/suggest/projects', '/slugify']})
     return render_template('home/index.html')
 
-# custom filter definitions
+# custom template filter definitions
 def nl2br(value): 
     return value.replace('\n','<br>\n')
 
+# custom template function definitions
+def query_source(**kwargs):
+    return fundfind.dao.DomainObject.q2json(fundfind.dao.DomainObject.generate_query(**kwargs))
+
 # customise the jinja environment here
 app.jinja_env.filters['nl2br'] = nl2br
-app.jinja_env.globals.update(generate_query=fundfind.dao.DomainObject.generate_query,
-        q2json=fundfind.dao.DomainObject.q2json)
+app.jinja_env.globals.update(query_source=query_source)
 
 if __name__ == "__main__":
     fundfind.dao.init_db()
