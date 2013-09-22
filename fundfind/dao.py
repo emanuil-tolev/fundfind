@@ -3,6 +3,8 @@ import uuid
 import UserDict
 import httplib
 from datetime import datetime
+import requests
+import copy
 
 import pyes
 from werkzeug import generate_password_hash, check_password_hash
@@ -89,6 +91,41 @@ class DomainObject(UserDict.IterableUserDict):
         resp = conn.getresponse()
         return resp.read()
         
+    @staticmethod
+    def q2json(ourq):
+        return ourq.to_search_json()
+
+    @classmethod
+    def generate_query(cls, q='', terms=None, facet_fields=None, flt=False, **kwargs):
+        '''Generate a query object. See query method's description.'''
+        if not q:
+            ourq = pyes.query.MatchAllQuery()
+        else:
+            if flt:
+                ourq = pyes.query.FuzzyLikeThisQuery(like_text=q,**kwargs)
+            else:
+                ourq = pyes.query.StringQuery(q, default_operator='AND')
+        
+        if terms:
+            termqs = []
+            for term in terms:
+                for val in terms[term]:
+                    termq = pyes.query.TermQuery(term, val)
+                    ourq = pyes.query.BoolQuery(must=[ourq,termq])
+                    termqs.append(copy.copy(termq))
+
+        # produce a simpler term query when no query string has been
+        # passed in - facetview doesn't like the nested BoolQueries
+        if not q and terms:
+            ourq = pyes.query.BoolQuery(must=termqs)
+        
+        ourq = ourq.search(**kwargs)
+        if facet_fields:
+            for item in facet_fields:
+                ourq.facet.add_term_facet(item['key'], size=item.get('size',100), order=item.get('order',"count"))
+
+        return ourq
+
     @classmethod
     def query(cls, q='', terms=None, facet_fields=None, flt=False, **kwargs):
         '''Perform a query on backend.
@@ -100,24 +137,7 @@ class DomainObject(UserDict.IterableUserDict):
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         '''
         conn, db = get_conn()
-        if not q:
-            ourq = pyes.query.MatchAllQuery()
-        else:
-            if flt:
-                ourq = pyes.query.FuzzyLikeThisQuery(like_text=q,**kwargs)
-            else:
-                ourq = pyes.query.StringQuery(q, default_operator='AND')
-        
-        if terms:
-            for term in terms:
-                for val in terms[term]:
-                    termq = pyes.query.TermQuery(term, val)
-                    ourq = pyes.query.BoolQuery(must=[ourq,termq])
-        
-        ourq = ourq.search(**kwargs)
-        if facet_fields:
-            for item in facet_fields:
-                ourq.facet.add_term_facet(item['key'], size=item.get('size',100), order=item.get('order',"count"))
+        ourq = cls.generate_query(q=q, terms=terms, facet_fields=facet_fields, flt=flt, **kwargs)
         out = conn.search(ourq, db, cls.__type__)
         return out
 
