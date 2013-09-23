@@ -52,7 +52,7 @@ def standard_authentication():
 def account(user):
     if hasattr(current_user,'id'):
         if user == current_user.id:
-            return render_template('account/view.html',current_user=current_user, active_page='account')
+            return render_template('account/view.html',current_user=current_user, active_page='account', page_title='Your Account')
     flash('You are not that user. Or you are not logged in.')
     return redirect('/account/login')
 
@@ -66,13 +66,14 @@ def content(path):
 def search():
     return render_template('search.html', active_page='search',
         es_host=config['ELASTIC_SEARCH_HOST'],
-        es_index=config['ELASTIC_SEARCH_DB']
+        es_index=config['ELASTIC_SEARCH_DB'],
+        page_title='Browse & Search FundFind'
     )
 
 @app.route('/funding_opportunities/<path:path>')
 def show_funding_opportunity(path):
     renderobj = fundfind.dao.FundingOpp.get(path)
-    return render_template('show.html', o=renderobj)
+    return render_template('show.html', o=renderobj, page_title=renderobj['title'])
 
 class DescribeFunderView(MethodView):
     '''Submit information about a funding organisation'''
@@ -90,7 +91,7 @@ class DescribeFunderView(MethodView):
         if req_format == 'json':
             return jsonify({'error': 'You need to POST to this URL if using the API.'})
         else:
-            return render_template('describe_funder.html', active_page='describe_funder')
+            return render_template('describe_funder.html', active_page='describe_funder', page_title='Describe a Funding Organisation')
 
     def post(self, req_format='html'):
         if current_user.is_anonymous():
@@ -110,7 +111,7 @@ class DescribeFunderView(MethodView):
                 return jsonify({'error': error_msg})
             else:
                 flash(error_msg)
-                return render_template('describe_funder.html')
+                return render_template('describe_funder.html', page_title='Describe a Funding Organisation')
 
 app.add_url_rule('/describe_funder', view_func=DescribeFunderView.as_view('describe_funder'))
 app.add_url_rule('/describe_funder.<req_format>', view_func=DescribeFunderView.as_view('describe_funder'))
@@ -132,9 +133,12 @@ class ShareFundoppView(MethodView):
             return jsonify({'error': 'You need to POST to this URL if using the API.'})
 
         renderobj = None
+        title = 'Share a Funding Opportunity'
         if path:
             renderobj = fundfind.dao.FundingOpp.get(path)
-        return render_template('share_fundopp.html', active_page='share_fundopp', o=renderobj)
+            title = 'Edit Funding Opportunity :: ' + renderobj['title']
+
+        return render_template('share_fundopp.html', active_page='share_fundopp', o=renderobj, page_title=title)
 
     def post(self, req_format='html'):
         if current_user.is_anonymous():
@@ -158,7 +162,7 @@ class ShareFundoppView(MethodView):
                 return jsonify({'error': error_msg})
             else:
                 flash(error_msg)
-                return render_template('share_fundopp.html')
+                return render_template('share_fundopp.html', page_title='Share a Funding Opportunity')
 
 app.add_url_rule('/share_fundopp', view_func=ShareFundoppView.as_view('share_fundopp'))
 app.add_url_rule('/share_fundopp.<req_format>', view_func=ShareFundoppView.as_view('share_fundopp'))
@@ -224,11 +228,11 @@ def home(req_format='html'):
         # TODO enumerate the available routes programmatically
         # TODO implement actual OPTIONS
         return jsonify({'options': ['/share_fundopp', '/describe_funder', '/suggest', '/suggest/projects', '/slugify']})
-    return render_template('home/index.html')
+    return render_template('home/index.html', page_title='FundFind - Welcome!')
 
 @app.route('/feedback')
 def feedback_info():
-    return render_template('feedback.html', active_page="feedback")
+    return render_template('feedback.html', active_page="feedback", page_title='Feedback for FundFind')
 
 # custom template filter definitions
 def nl2br(value): 
