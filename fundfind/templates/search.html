@@ -36,7 +36,13 @@ jQuery(document).ready(function($) {
 		{'field': 'owner.exact', 'display': 'Submitter'},
     ],
 	
-    search_sortby: [{'display':'Funder', 'field':'funder.exact'},{'display':'Opportunity title','field':'title.exact'}],
+    search_sortby: [
+            {'display':'Funder', 'field':'funder.exact'},
+            {'display':'Opportunity title','field':'title.exact'},
+            {'display': 'Last modified', 'field':'modified'},
+            {'display': 'Date created', 'field':'created'}
+        ],
+    sort: [{'modified':{'order':'desc'}}],
     searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder','field':'funder'}],
     paging: {
       size: 10
