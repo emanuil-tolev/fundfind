@@ -1,6 +1,9 @@
 {
     # service
     "service_name" : "FundFind",
+
+    # whether the Flask app should run in debug mode with reloader
+    "debug": true,
 	
 	# admin e-mail addresses
 	"ADMINS": ["emanuil@cottagelabs.com"],
