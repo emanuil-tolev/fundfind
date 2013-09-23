@@ -226,6 +226,10 @@ def home(req_format='html'):
         return jsonify({'options': ['/share_fundopp', '/describe_funder', '/suggest', '/suggest/projects', '/slugify']})
     return render_template('home/index.html')
 
+@app.route('/feedback')
+def feedback_info():
+    return render_template('feedback.html', active_page="feedback")
+
 # custom template filter definitions
 def nl2br(value): 
     return value.replace('\n','<br>\n')
