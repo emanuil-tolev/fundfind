@@ -54,7 +54,7 @@ and are not empty.#}
                     </ul>
                 {% elif field == 'tags' %}
                     {% for tag in value %}
-                        <a href="{{ "/search?source=" + query_source(terms={"tags":[tag]}) }}" target="_blank">{{ tag }}</a>{% if not loop.last %},{% endif %}
+                        <a href="{{ "/search?source=" + query_source(terms={"tags.exact":[tag]}) }}" target="_blank">{{ tag }}</a>{% if not loop.last %},{% endif %}
                     {% endfor %}
                 {% else %}
                 {{ value|join(', ') }}

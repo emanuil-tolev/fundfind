@@ -12,12 +12,33 @@ from flask.ext.login import UserMixin
 
 from fundfind.config import config
 
-def init_db():
+def init_db(host=None, index=None, init_type=None, mappings=None):
+
+    if not host: host = config['ELASTIC_SEARCH_HOST']
+    if not index: index = config['ELASTIC_SEARCH_DB']
+    if not mappings: mappings = config['MAPPINGS']
+
     conn, db = get_conn()
     try:
         conn.create_index(db)
     except pyes.exceptions.IndexAlreadyExistsException:
         pass
+
+    
+    base_index_url = 'http://' + str(host).lstrip('http://').rstrip('/') + '/' + str(index)
+    for key, mapping in mappings.iteritems():
+        im = base_index_url + '/' + key + '/_mapping'
+        exists = requests.get(im)
+        if exists.status_code == 200:
+            requests.put(im, json.dumps(mapping)) # update mapping
+        else:
+            requests.post(base_index_url + '/' + key + '/test', data=json.dumps({'id':'test'})) # create type
+            requests.delete(base_index_url + '/' + key + '/' + 'test') # delete data used to create type
+            requests.put(im, json.dumps(mapping))
+
+    if init_type:
+        requests.post(base_index_url + '/' + init_type + '/test', data=json.dumps({'id':'test'})) # create type
+        requests.delete(base_index_url + '/' + init_type + '/' + 'test') # delete data used to create type
 
 def get_conn():
     host = str(config["ELASTIC_SEARCH_HOST"])

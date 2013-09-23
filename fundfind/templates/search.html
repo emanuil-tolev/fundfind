@@ -28,14 +28,12 @@ jQuery(document).ready(function($) {
     datatype: 'json',
 	
     facets: [
-        {'field': 'funder', 'display': 'Funder'},
-        {'field': 'title', 'display': 'Opportunity Title'},
+		{'field': 'tags.exact', 'display': 'Tags'},
+        {'field': 'funder.exact', 'display': 'Funder'},
+        {'field': 'title', 'display': 'Title Keywords'},
         {'field': '_type', 'display': 'Record Type'},
-		{'field': 'origin', 'display': 'Origin'},
-		{'field': 'license', 'display': 'License'},
-		{'field': 'owner', 'display': 'Submitter'},
-		{'field': 'tags', 'display': 'Tags'},
-		{'field': 'of_interest_to', 'display': 'Of interest to'},
+		{'field': 'origin.exact', 'display': 'Origin'},
+		{'field': 'owner.exact', 'display': 'Submitter'},
     ],
 	
     search_sortby: [{'display':'Funder', 'field':'funder.exact'},{'display':'Opportunity title','field':'title.exact'}],
