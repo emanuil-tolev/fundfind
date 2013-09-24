@@ -38,10 +38,11 @@
                     <div class="nav-collapse collapse">
                         <!-- .nav, .navbar-search, .navbar-form, etc -->
                         <ul class="nav nav-tabs">
-                            <li {% if active_page == 'search' %}class="active"{% endif %}><a href="/search">Search</a></li>
+                            <li {% if active_page == 'search' %}class="active"{% endif %}><a class="important" href="/search">Search</a></li>
                             <li {% if active_page == 'share_fundopp' %}class="active"{% endif %}><a class="important" href="/share_fundopp">Share a funding opportunity</a></li>
                             <li {% if active_page == 'describe_funder' %}class="active"{% endif %}><a href="/describe_funder">Describe a Funder</a></li>
                             <li {% if active_page == 'feedback' %}class="active"{% endif %}><a href="/feedback">Feedback</a></li>
+                            <li {% if active_page == 'about' %}class="active"{% endif %}><a href="/about">About</a></li>
                         </ul>
                         <ul class="nav pull-right">
                             {% if current_user.is_anonymous() %}

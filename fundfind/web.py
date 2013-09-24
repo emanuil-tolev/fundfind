@@ -234,6 +234,10 @@ def home(req_format='html'):
 def feedback_info():
     return render_template('feedback.html', active_page="feedback", page_title='Feedback for FundFind')
 
+@app.route('/about')
+def about_info():
+    return render_template('about.html', active_page="about", page_title='About FundFind')
+
 # custom template filter definitions
 def nl2br(value): 
     return value.replace('\n','<br>\n')

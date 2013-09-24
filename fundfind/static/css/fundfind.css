@@ -1,3 +1,7 @@
+.sky {
+    color: #2FA4E7;
+}
+
 .content {
   margin-top: 20px;
 }
@@ -16,17 +20,30 @@ td ul, ol {
 	margin-bottom: 0;
 }
 
+.lead {
+  margin-bottom: 20px;
+  font-size: 16.099999999999998px;
+  font-weight: 200;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .lead {
+    font-size: 21px;
+  }
+}
+
 /************************************
-  * Flash notifications / messages
-  ***********************************/
+* Flash notifications / messages
+***********************************/
 
 div.alert-messages {
   margin-top: 15px;
 }
 
 /************************************
-  * Front page
-  ***********************************/
+* Front page
+***********************************/
 
 input.frontin {
     font-size:5em;
