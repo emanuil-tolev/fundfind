@@ -1,0 +1,12 @@
+                            <li {% if active_page == 'describe_funder' %}class="active"{% endif %}><a href="/describe_funder">Describe a Funder</a></li>
+                            <li {% if active_page == 'feedback' %}class="active"{% endif %}><a href="/feedback">Feedback</a></li>
+
+
+
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div> <!-- /content -->
+
+        <script src="{{ url_for('static', filename='vendor/jquery-1.7.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/jquery-ui-1.8.18.custom/jquery-ui-1.8.18.custom.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/bootstrap-2.0.0/js/bootstrap.min.js') }}"></script>

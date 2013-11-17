@@ -1,0 +1,251 @@
+h2 {
+	font-family: 'Josefin Slab', serif;
+	text-transform:uppercase;
+	font-size: 1em;
+}
+/* nav */
+@media (min-width: 992px) { 
+	.nav.navbar-nav {
+		text-align: center;
+		position: relative;
+		bottom: -103px;
+		float: right;
+	}
+}
+.navbar {
+	margin-bottom: 0px;
+}
+.navbar-brand .logo
+{
+	background: url(../images/logo.png) no-repeat top center;
+	background-size: 100%;
+	width: 300px;
+	height:150px;
+	padding:0;
+}
+.navbar-header {
+	background-color: #fff;
+}
+.navbar-default {
+	background-color: #fff;
+	border-color: #fff;
+}
+.collapse.navbar-collapse {
+	font-size: 1.2em;
+}
+.navbar-collapse h2:hover{
+	color:#4cbce5;
+}
+.nav.navbar-nav .active a{
+	color: #4dbce5;
+	background-color: transparent;
+	border-bottom: 4px #f15a2b solid;
+}
+.nav.navbar-nav .active a:hover{
+	color: #f15a2b;
+	background-color: transparent;
+}
+.nav.navbar-nav a:hover{
+	color: #f15a2b;
+	background-color: transparent;
+}
+.nav.navbar-nav {
+	text-align: center;
+}
+/* buttons */
+.btn { 
+padding: 6px 12px 0 0;
+}
+
+.btn-lg {
+	font-size: 1em;
+	border-radius: 0;
+	border-color: transparent;
+	background-color: #f15a2b;
+
+}
+.btn-primary {
+	background-color: #f15a2b;
+}
+.btn-lg1 {
+	font-size: 1em;
+	border-radius: 0;
+	border-color: transparent;
+	margin-top: 5px;
+	background-color: #4dbce5;
+	color: #fff;
+
+}
+.btn-lg2 {
+	font-size: 1em;
+	border-radius: 0;
+	border-color: transparent;
+	background-color: #4dbce5;
+	margin-top: 25px;
+	text-align: left;
+	padding: 5px 0 10px 15px;
+	line-height:0.5em;
+}
+.btn-lg2 p {
+	color: #4c4d4f;
+}
+.btn:hover{
+	background-color:#bdbec0 ;
+	border-color: transparent;
+}
+/* intro */
+.gray {
+	background-color: #bdbec0;
+}
+.stripe {
+	margin: 0;
+	padding: 15px 0;
+	width: 100%;
+}
+.block {
+	display: table !important;
+	width: 100%;
+}
+.block-icon {
+	display: table-cell;
+	vertical-align: middle;
+	padding-right: 10px;
+	width: 50px;
+}
+.block-text {
+	display: table-cell;
+	width: 80%;
+	padding-right: 10px;
+}
+.block-arrow {
+	display: table-cell;
+	vertical-align: middle;
+}
+.col-md-12 h1{
+	color: #4c4d4f;
+	font-size: 2.3em;
+}
+.col-md-12 p{
+	color: #fff;
+	font-size: 1.3em;
+}
+.row.gray {
+	padding: 10px 25px 10px 10px;
+}
+/* big buttons */
+.row {
+	display: inline-block;
+
+}
+.col-md-8 .find{
+	font-size: 2.3em;
+	color:#fff;
+	background-color: #f15a2b;
+	padding: 30px 25px 30px 10px;
+	margin: 15px 10px 15px 0;
+	display: block;
+}
+.find:hover{
+	background-color:#de5125;
+	text-decoration: none; 
+}
+.glyphicon-search, 
+.glyphicon-share {
+	top:5px;
+	left: 10px;
+	margin-right: 10px;
+}
+.arrow {
+	background: url(../images/arrow.png) no-repeat;
+	background-size: 50%;
+	width: 30px;
+	height: 30px;
+	float: right;
+}
+.col-md-8 .share{
+	font-size: 2.3em;
+	color:#fff;
+	background-color: #4dbce5;
+	padding: 30px 25px 30px 10px;
+	margin: 15px 10px 15px 0;
+	display: block;
+}
+.share:hover{
+	background-color:#45a7cb;
+	text-decoration: none; 
+}
+/* form */
+.form-signin-heading {
+	color:#4dbce5;
+	font-size: 1.3em;
+	padding:15px 0 15px 0; 
+}
+.form-control {
+	border-radius: 0px;
+	background-color: #ecedef;
+	border-color: transparent;
+	height: 40px;
+	margin-top: 10px;
+	color: #bdbec0;
+	box-shadow: none;
+}
+.checkbox {
+	font-family: 'Josefin Slab', serif;
+	text-transform:uppercase;
+	color: #bdbec0;
+}
+/* footer */
+.footer a {
+	color:#737474;
+}
+.footer ul li {
+	list-style: none;
+	display: inline-block;
+}
+.footer li {
+	padding-right: 35px;
+	margin-top:50px;
+}
+.footer a:hover {
+	text-decoration: none;
+	color: #4dbce5;
+}
+/* motiff */
+.detail_orange {
+	background: url(../images/morange.png) no-repeat;
+	background-size: 96%;
+	width: 30px;
+	height: 56px;
+	float: left;	
+	margin-top:-20px;
+}
+.detail_blue {
+	background: url(../images/mblue.png) no-repeat;
+	background-size: 96%;
+	width: 30px;
+	height: 56px;
+	float: left;	
+	margin-top:-26px;
+}
+.motif-small{
+	background: url(../images/motif_small.png) no-repeat;
+	background-size: 100%;
+	width: 30px;
+	height: 73px;
+	float: left;
+	margin-top:26px;
+}
+
+@media (min-width: 992px) {
+	.motif {
+		background: url('../images/motif.png') no-repeat top;
+		background-size: 100%;
+		width: 230px;
+		height: 242px;
+		display: block;
+		z-index: 1000;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+	}
+}
