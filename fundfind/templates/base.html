@@ -5,15 +5,13 @@
         <title>{{ page_title }}</title>
         <meta name="description" content="FundFind">
         <meta name="author" content="Emanuil Tolev">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap-3.0.2/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/design.css') }}">
-
-
-  <link href='http://fonts.googleapis.com/css?family=Josefin+Slab:700' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Josefin+Slab:700' rel='stylesheet' type='text/css'>
         <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -52,102 +50,61 @@
     </div>
   </nav>
 
-            <div class="alert-messages">
-                {% with messages = get_flashed_messages(with_categories=True) %}
-                {%if messages %}
-                {% for category, message in messages %}
-                <div class="alert {% if category %}alert-{{category}}{% endif %} fade in" data-alert="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
-            </div>
+  <div class="alert-messages">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {%if messages %}
+    {% for category, message in messages %}
+    <div class="alert {% if category %}alert-{{category}}{% endif %} fade in" data-alert="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
 
-            {%if msg %}
-            <div id="fundfind_msg">
-                <p> {{msg}} </p>
-            </div>
-            {% endif %}
-  
-  <div class="stripe gray">
+  {%if msg %}
+    <div id="fundfind_msg">
+      <p> {{msg}} </p>
+    </div>
+  {% endif %}
+
   <div class="container">
-    <div class="row">
-      <div class="col-md-12 ">
-        <div class="col-md-8 ">
-          <h1>FundFind lets you share funding opportunities!
-          </h1>
-          <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - share and look for funding!</p>	
-        </div>
-      </div>
-    </div>
-    </div>
-    </div>
-    <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <a class="block find">
-          <span class="block-icon">
-          <span class="glyphicon glyphicon-search"></span>
-          </span class="block-text">
-          <span class="block-text">Find Current Funding Opportunities</span>
-          <span class="block-arrow"><span class="arrow"></span></span>
-        </a>
-        <a class="block share"> 
-        <span class="block-icon">
-        <span class="glyphicon glyphicon-share"></span>
-        </span>
-        <span class="block-text">Share funding opportunities 
-          or information about funders</span>
-        <span class="block-arrow"><span class="arrow"></span></span>
-        </a>
-      </div>
+    {% block content %}
+    {% endblock %}
+  </div>
 
-        <div class="col-md-4">
-          <form class="form-signin">
-            <h2 class="form-signin-heading"> <span class="detail_orange"></span>Quick Login</h2>
-            <input type="text" class="form-control" placeholder="Email address" required="" autofocus="">
-            <input type="password" class="form-control" placeholder="Password" required="">
-            <label class="checkbox">
-              <input type="checkbox" value="remember-me"> Remember me
-            </label>
-            <button class="btn btn-lg btn-primary btn-block" type="submit"><h2>Sign in</h2></button>
-          </form>
-          <button class="btn btn-lg1 btn-block" type="submit"><h2> <span class="detail_blue"></span> No Account? 
-            Register here!</h2></button>
-            <button class="btn btn-lg2 btn-primary btn-block" type="redirect"><h2>Feedback</h2> <p>How are we doing?</p></button>
-        </div>
-    </div>
+  <div class="container">
     <div class="row footer"><span class="motif-small"></span>
-          <ul> 
-            <li><a href="{{ url_for('content', path='api') }}">FundFind API</a></li>
-            <li><a href="https://github.com/emanuil-tolev/fundfind/" target="_blank">All open source! (get code)</a></li>
-            <li>Started by <a href="http://www.cottagelabs.com/people/emanuil" target="_blank">Emanuil Tolev</a></li>
-            <li><a href="https://github.com/emanuil-tolev/fundfind/graphs/contributors" target="_blank">More contributors</a></li>
+      <ul> 
+        <li><a href="{{ url_for('content', path='api') }}">FundFind API</a></li>
+        <li><a href="https://github.com/emanuil-tolev/fundfind/" target="_blank">All open source! (get code)</a></li>
+        <li>Started by <a href="http://www.cottagelabs.com/people/emanuil" target="_blank">Emanuil Tolev</a></li>
+        <li><a href="https://github.com/emanuil-tolev/fundfind/graphs/contributors" target="_blank">More contributors</a></li>
 
-          </ul>
+      </ul>
     </div>
+  </div>
 
 
-        {% block js_bottom %}
-  <script src="assets/js/jquery-1.10.2.min.js"></script>
-  <script src="assets/js/bootstrap.min.js"></script>
-        <script src="{{ url_for('static', filename='vendor/linkify/1.0-modified/jquery.linkify-1.0.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
-        <script>
-            window.scrollback = {
-                streams:["fundfind"],
-                theme: 'dark',
-                ticker: false,
-            };
+{% block js_bottom %}
+  <script src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/bootstrap-3.0.2/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/linkify/1.0-modified/jquery.linkify-1.0.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+  <script>
+      window.scrollback = {
+          streams:["fundfind"],
+          theme: 'dark',
+          ticker: false,
+      };
 
-            /***** don't edit below *****/
-            (function(d,s,h,e){e=d.createElement(s);e.async=1;
-                e.src=h+'/client.min.js';scrollback.host=h;
-                d.getElementsByTagName(s)[0].parentNode.appendChild(e);}
-            (document,'script',location.protocol+'//scrollback.io'));
-        </script>
-        {% endblock js_bottom %}
-  </body>
+      /***** don't edit below *****/
+      (function(d,s,h,e){e=d.createElement(s);e.async=1;
+          e.src=h+'/client.min.js';scrollback.host=h;
+          d.getElementsByTagName(s)[0].parentNode.appendChild(e);}
+      (document,'script',location.protocol+'//scrollback.io'));
+  </script>
+{% endblock js_bottom %}
+</body>
 </html>

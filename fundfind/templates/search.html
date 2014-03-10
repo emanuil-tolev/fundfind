@@ -3,12 +3,12 @@
 {% block content %}
 
 <!--<iframe src="/static/vendor/facetview/local.html" style="width: 1000px; height: 450px;"></iframe>-->
-<div class="row-fluid">
-    <div class="span8">
+<div class="row">
+    <div class="col-md-8">
         <h2 style="text-align:center;">Current Funding Opportunities</h2>
         <div class="facet-view-simple"></div>
     </div>
-    <div class="span4">
+    <div class="col-md-4">
         <h2>Past Funding Data</h2>
     	<div id="suggestions"></div>
     </div>
@@ -20,7 +20,7 @@
 	
 <script type="text/javascript" src="{{ url_for('static', filename='vendor/facetview/jquery.facetview.js')}}"></script>
 
-  <script type="text/javascript">
+<script type="text/javascript">
   
 function suggestions_error(msg) {
 	$('#suggestions').html(msg);
@@ -48,13 +48,13 @@ jQuery(document).ready(function($) {
             {'display': 'Last modified', 'field':'modified'},
             {'display': 'Date created', 'field':'created'}
         ],
-    sort: [{'modified':{'order':'desc'}}],
+    //sort: [{'modified':{'order':'desc'}}],
     searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder','field':'funder'}],
     paging: {
       size: 10
     },
-    resultwrap_start: '<tr><td class="span11">',
-    resultwrap_end:'</td><td class="span1"><a href="{{ url_for("show_funding_opportunity", path="FACETVIEW_REPLACE_START id FACETVIEW_REPLACE_END") }}" target="_blank">View more / Edit</a></td></tr>',
+    resultwrap_start: '<tr><td class="col-md-11">',
+    resultwrap_end:'</td><td class="col-md-1"><a href="{{ url_for("show_funding_opportunity", path="FACETVIEW_REPLACE_START id FACETVIEW_REPLACE_END") }}" target="_blank">View more / Edit</a></td></tr>',
     resultwrap_replace_text: true,
 	result_display: [
 		[

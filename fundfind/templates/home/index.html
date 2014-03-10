@@ -1,6 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <div class="stripe gray">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 ">
+          <div class="col-md-8 ">
+            <h1>FundFind lets you share funding opportunities!
+            </h1>
+            <p>Are you a scholar? A postgrad or an academic? Science or Humanities? FundFind's got it all - share and look for funding!</p>	
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <a class="block find">
+          <span class="block-icon">
+          <span class="glyphicon glyphicon-search"></span>
+          </span class="block-text">
+          <span class="block-text">Find Current Funding Opportunities</span>
+          <span class="block-arrow"><span class="arrow"></span></span>
+        </a>
+        <a class="block share"> 
+        <span class="block-icon">
+        <span class="glyphicon glyphicon-share"></span>
+        </span>
+        <span class="block-text">Share funding opportunities 
+          or information about funders</span>
+        <span class="block-arrow"><span class="arrow"></span></span>
+        </a>
+      </div>
+
+        <div class="col-md-4">
+          <form class="form-signin">
+            <h2 class="form-signin-heading"> <span class="detail_orange"></span>Quick Login</h2>
+            <input type="text" class="form-control" placeholder="Email address" required="" autofocus="">
+            <input type="password" class="form-control" placeholder="Password" required="">
+            <label class="checkbox">
+              <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            <button class="btn btn-lg btn-primary btn-block" type="submit"><h2>Sign in</h2></button>
+          </form>
+          <button class="btn btn-lg1 btn-block" type="submit"><h2> <span class="detail_blue"></span> No Account? 
+            Register here!</h2></button>
+            <button class="btn btn-lg2 btn-primary btn-block" type="redirect"><h2>Feedback</h2> <p>How are we doing?</p></button>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+
+{#
+{% block content %}
 
       <div class="hero-unit">
         <p>FundFind lets you share funding opportunities!</p>
@@ -55,3 +109,4 @@
         </div>
       </div>
 {% endblock %}
+#}
