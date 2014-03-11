@@ -1,3 +1,16 @@
+@font-face {
+  font-family: 'Josefin Slab';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Josefin Slab Bold'), local('JosefinSlab-Bold'), url(/static/fonts/NbE6ykYuM2IyEwxQxOIi2Hl4twXkwp3_u9ZoePkT564.woff) format('woff');
+}
+
 .motif {
     z-index: 0;
+}
+
+.no-padding,
+.facet-view-simple .col-md-3 {
+    padding-left: 0;
+    padding-right: 0;
 }
