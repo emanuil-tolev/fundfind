@@ -34,20 +34,20 @@ jQuery(document).ready(function($) {
     datatype: 'json',
 	
     facets: [
-		{'field': 'tags.exact', 'display': 'Tags'},
+		    {'field': 'tags.exact', 'display': 'Tags'},
         {'field': 'funder.exact', 'display': 'Funder'},
         {'field': 'title', 'display': 'Title Keywords'},
         {'field': '_type', 'display': 'Record Type'},
-		{'field': 'origin.exact', 'display': 'Origin'},
-		{'field': 'owner.exact', 'display': 'Submitter'},
+		    {'field': 'origin.exact', 'display': 'Origin'},
+		    {'field': 'owner.exact', 'display': 'Submitter'},
     ],
 	
     search_sortby: [
-            {'display':'Funder', 'field':'funder.exact'},
-            {'display':'Opportunity title','field':'title.exact'},
-            {'display': 'Last modified', 'field':'modified'},
-            {'display': 'Date created', 'field':'created'}
-        ],
+        {'display':'Funder', 'field':'funder.exact'},
+        {'display':'Opportunity title','field':'title.exact'},
+        {'display': 'Last modified', 'field':'modified'},
+        {'display': 'Date created', 'field':'created'}
+    ],
     //sort: [{'modified':{'order':'desc'}}],
     searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder','field':'funder'}],
     paging: {
@@ -56,6 +56,8 @@ jQuery(document).ready(function($) {
     resultwrap_start: '<tr><td class="col-md-11">',
     resultwrap_end:'</td><td class="col-md-1"><a href="{{ url_for("show_funding_opportunity", path="FACETVIEW_REPLACE_START id FACETVIEW_REPLACE_END") }}" target="_blank">View more / Edit</a></td></tr>',
     resultwrap_replace_text: true,
+    pager_on_top: true,
+    pager_slider: true,
 	result_display: [
 		[
 			{
