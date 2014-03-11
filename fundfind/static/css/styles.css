@@ -18,3 +18,31 @@
 .suggestion {
     margin-right: 7px;
 }
+
+.pagination ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.pagination,
+.pagination ul {
+    width: 100%;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination li.prev,
+.pagination li.next {
+    width: 10%;
+}
+
+.pagination li.next {
+    text-align: right;
+}
+
+.pagination li.active {
+    width: 75%;
+    text-align: center;
+}
