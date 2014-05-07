@@ -7,3 +7,8 @@ src*
 build*
 dist*
 elasticsearch*
+
+app.cfg
+
+# PyCharm IDE
+.idea/

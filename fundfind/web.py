@@ -21,7 +21,7 @@ app.register_blueprint(account, url_prefix='/account')
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
     try:
-        out = fundfind.dao.Account.get(userid)
+        out = fundfind.dao.Account.pull(userid)
     except ElasticSearchException:
         flash('Your account was deleted while you were logged in. (?!)', 'error')
         return None
@@ -37,14 +37,14 @@ def standard_authentication():
     """Check remote_user on a per-request basis."""
     remote_user = request.headers.get('REMOTE_USER', '')
     if remote_user:
-        user = fundfind.dao.Account.get(remote_user)
+        user = fundfind.dao.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
     # add a check for provision of api key
     elif 'api_key' in request.values:
         res = fundfind.dao.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
         if len(res) == 1:
-            user = fundfind.dao.Account.get(res[0]['_source']['id'])
+            user = fundfind.dao.Account.pull(res[0]['_source']['id'])
             if user:
                 login_user(user, remember=False)
 
@@ -72,7 +72,7 @@ def search():
 
 @app.route('/funding_opportunities/<path:path>')
 def show_funding_opportunity(path):
-    renderobj = fundfind.dao.FundingOpp.get(path)
+    renderobj = fundfind.dao.FundingOpp.pull(path)
     return render_template('show.html', o=renderobj, page_title=renderobj['title'])
 
 class DescribeFunderView(MethodView):
@@ -135,7 +135,7 @@ class ShareFundoppView(MethodView):
         renderobj = None
         title = 'Share a Funding Opportunity'
         if path:
-            renderobj = fundfind.dao.FundingOpp.get(path)
+            renderobj = fundfind.dao.FundingOpp.pull(path)
             title = 'Edit Funding Opportunity :: ' + renderobj['title']
 
         return render_template('share_fundopp.html', active_page='share_fundopp', o=renderobj, page_title=title)

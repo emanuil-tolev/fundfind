@@ -66,7 +66,7 @@ class DomainObject(UserDict.IterableUserDict):
         return self.upsert(self.data)
 
     @classmethod
-    def get(cls, id_):
+    def pull(cls, id_):
         '''Retrieve object by id.'''
         conn, db = get_conn()
         

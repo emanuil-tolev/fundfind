@@ -48,7 +48,8 @@ class Importer(object):
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
             "license": CROWDSOURCE_CONTRIB_LICENSE,
-            "origin": "crowdsourced"
+            "origin": "Crowdsourced",
+            "origin_method": "crowdsourced"
         }
         
         fundfind.dao.Funder.upsert(record)
@@ -83,7 +84,8 @@ class Importer(object):
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
             "license": CROWDSOURCE_CONTRIB_LICENSE,
-            "origin": "crowdsourced"
+            "origin": "Crowdsourced",
+            "origin_method": "crowdsourced"
         }
 
         # cause ElasticSearch exceptions if null or empty string

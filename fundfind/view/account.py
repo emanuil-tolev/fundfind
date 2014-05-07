@@ -29,7 +29,7 @@ def login():
         user = None
 
         try:
-            user = dao.Account.get(username)
+            user = dao.Account.pull(username)
         except ElasticSearchException:
             pass # the else below will catch it
             # Not putting a specific message here since we don't want login
