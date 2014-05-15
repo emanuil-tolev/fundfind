@@ -238,6 +238,14 @@ def feedback_info():
 def about_info():
     return render_template('about.html', active_page="about", page_title='About FundFind')
 
+@app.route('/community')
+def community():
+    return render_template('community.html', active_page="community", page_title='Postgraduate Funding Community')
+
+@app.route('/partnership')
+def partnership():
+    return render_template('partnership.html', active_page="partnership", page_title='Partner up with FundFind')
+
 # custom template filter definitions
 def nl2br(value): 
     return value.replace('\n','<br>\n')

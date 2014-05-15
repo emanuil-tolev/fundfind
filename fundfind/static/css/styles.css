@@ -46,3 +46,9 @@
     width: 75%;
     text-align: center;
 }
+
+@media (min-width: 992px) {
+	.nav.navbar-nav {
+		bottom: 0;
+	}
+}

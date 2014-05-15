@@ -37,6 +37,8 @@
         <ul class="nav navbar-nav">
           <li {% if active_page == 'search' %}class="active"{% endif %}><a href="{{ url_for('search') }}"><h2>Find Funding</h2></a></li>
           <li {% if active_page == 'share_fundopp' %}class="active"{% endif %}><a href="{{ url_for('share_fundopp') }}"><h2>Share Funding</h2></a></li>
+          <li {% if active_page == 'community' %}class="active"{% endif %}><a href="{{ url_for('community') }}"><h2>Community</h2></a></li>
+          <li {% if active_page == 'partnership' %}class="active"{% endif %}><a href="{{ url_for('partnership') }}"><h2>Partnership</h2></a></li>
           <li {% if active_page == 'about' %}class="active"{% endif %}><a href="{{ url_for('about_info') }}"><h2>About</h2></a></li>
           {% if current_user.is_anonymous() %}
               <li><a href="{{url_for('account.register')}}"><h2>Register</h2></a></li>
