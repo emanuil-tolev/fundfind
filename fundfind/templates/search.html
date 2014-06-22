@@ -16,8 +16,8 @@
 {% block js_bottom -%}
     {{super()}}
 
-<script type="text/javascript">var es_host = 'localhost:9200';</script>
-<script type="text/javascript">var es_index = 'fundfind';</script>
+<script type="text/javascript">var es_host = '{{ es_host }}';</script>
+<script type="text/javascript">var es_index = '{{ es_index }}';</script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='vendor/facetview2/jquery.facetview2.js')}}"></script>
 
