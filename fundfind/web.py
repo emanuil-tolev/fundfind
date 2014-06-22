@@ -119,15 +119,15 @@ app.add_url_rule('/describe_funder.<req_format>', view_func=DescribeFunderView.a
 class ShareFundoppView(MethodView):
     '''Submit information about a funding opportunity'''
     def get(self, req_format='html', path=None):
-        if current_user.is_anonymous():
-            if req_format == 'json':
-                return jsonify({'error': 'You need to specify api_key in the request data. Only registered users can submit funder or funding opportunity data.'})
-            else:
-                flash('You need to login to be able to describe funders or funding opportunities.')
-                return redirect('/account/login')
+        #if current_user.is_anonymous():
+        #    if req_format == 'json':
+        #        return jsonify({'error': 'You need to specify api_key in the request data. Only registered users can submit funder or funding opportunity data.'})
+        #    else:
+        #        flash('You need to login to be able to describe funders or funding opportunities.')
+        #        return redirect('/account/login')
 
         if request.values.get("name") is not None:
-            return self.post(req_format, path)
+            return self.post(req_format)
 
         if req_format == 'json':
             return jsonify({'error': 'You need to POST to this URL if using the API.'})
@@ -142,7 +142,7 @@ class ShareFundoppView(MethodView):
 
     def post(self, req_format='html'):
         if current_user.is_anonymous():
-            abort(401)
+            current_user.id = 'anonymous'
         
         if request.values.has_key('title') and request.values['title']:
             importer = fundfind.importer.Importer(owner=current_user)

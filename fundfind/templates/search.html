@@ -2,208 +2,27 @@
 
 {% block content %}
 
-<!--<iframe src="/static/vendor/facetview/local.html" style="width: 1000px; height: 450px;"></iframe>-->
-<div class="row">
-    <div class="col-md-8 no-padding">
+    <div class="col-md-8">
         <h2 style="text-align:center;">Current Funding Opportunities</h2>
         <div class="facet-view-simple"></div>
     </div>
-    <div class="col-md-4 no-padding">
+    <div class="col-md-4">
         <h2>Past Funding Data</h2>
     	<div id="suggestions"></div>
     </div>
-</div>
+
 {% endblock %}
 
 {% block js_bottom -%}
     {{super()}}
-	
-<script type="text/javascript" src="{{ url_for('static', filename='vendor/facetview/jquery.facetview.js')}}"></script>
 
-<script type="text/javascript">
-  
-function suggestions_error(msg) {
-	$('#suggestions').html(msg);
-}
+<script type="text/javascript">var es_host = 'localhost:9200';</script>
+<script type="text/javascript">var es_index = 'fundfind';</script>
 
-jQuery(document).ready(function($) {
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/facetview2/jquery.facetview2.js')}}"></script>
 
-  $('.facet-view-simple').facetview({
-    search_url: 'http://{{ es_host }}/{{ es_index }}/funding_opportunity/_search?',
-    search_index: 'elasticsearch',
-    datatype: 'json',
-	
-    facets: [
-		    {'field': 'tags.exact', 'display': 'Tags'},
-        {'field': 'funder.exact', 'display': 'Funder'},
-        {'field': 'title', 'display': 'Title Keywords'},
-        {'field': '_type', 'display': 'Record Type'},
-		    {'field': 'origin.exact', 'display': 'Origin'},
-		    {'field': 'owner.exact', 'display': 'Submitter'},
-    ],
-	
-    search_sortby: [
-        {'display':'Funder', 'field':'funder.exact'},
-        {'display':'Opportunity title','field':'title.exact'},
-        {'display': 'Last modified', 'field':'modified'},
-        {'display': 'Date created', 'field':'created'}
-    ],
-    //sort: [{'modified':{'order':'desc'}}],
-    searchbox_fieldselect: [{'display':'Opportunity Title','field':'title'},{'display':'Funder','field':'funder'}],
-    paging: {
-      size: 10
-    },
-    resultwrap_start: '<tr><td class="col-md-11">',
-    resultwrap_end:'</td><td class="col-md-1"><a href="{{ url_for("show_funding_opportunity", path="FACETVIEW_REPLACE_START id FACETVIEW_REPLACE_END") }}" target="_blank">View more / Edit</a></td></tr>',
-    resultwrap_replace_text: true,
-    pager_on_top: true,
-    pager_slider: true,
-	result_display: [
-		[
-			{
-				"pre": "<strong>",
-				"field": "name",
-				"post": "</strong>"
-			}
-		],
-		[
-			{
-			    "pre": "<strong>Title</strong>: ",
-				"field": "title",
-			}
-		],
-		[
-			{
-				"pre": "<u>Homepage</u>: ",
-				"field": "homepage",
-			}
-		],
-		[
-			{
-				"pre": "<u>URL</u>: ",
-				"field": "url",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Interested in</u>: ",
-				"field": "interested_in",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Policies</u>: ",
-				"field": "policies",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Tags</u>: ",
-				"field": "tags",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Useful links</u>: ",
-				"field": "useful_links",
-			}
-		],
-/*		[
-			{
-			    "pre": "<strong>Username / ID</strong>: ",
-				"field": "id",
-			}
-		],
-*/		[
-			{
-			    "pre": "<u>Interests</u>: ",
-				"field": "interests",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Country</u>: ",
-				"field": "country",
-			}
-		],
-		[
-			{
-			    "pre": "<u>Affiliation</u>: ",
-				"field": "organisation",
-				"post": ", "
-			},
-			{
-				"field": "department",
-				"post": ", "
-			},
-			{
-				"field": "research_group"
-			}
-		],
-	]
-	
-  });
-  
-    var timeout = null;
-    function gtrDelayedSearch() {
-      if (timeout) {  
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(function() {
-         gtrSearch();
-      }, 1000);
-    }
+<script type="text/javascript" src="{{ url_for('static', filename='js/search.js')}}"></script>
 
-    function gtrSearch() {
-	    	facetview_query = $('input[name=q]')[0].value;
-	    	
-	    	if( facetview_query.trim().length ) {
-	    		var url = '/suggest/projects';
-	    		
-	    		$.get(url, {similar_to:facetview_query}, function(data) {
-	    			if(data.error) {
-	    				suggestions_error(data.error);
-	    				return false;
-	    			}
-	    			
-	    			var suggestion_count = 0;
-	    			
-	    			var suggestions = '';
-	    			suggestion_row_start = '<div class="row suggestion-row">';
-	    			suggestions = suggestions + suggestion_row_start;
-	    			
-	    			jQuery.each(data.results, function() {
-	    				suggestion_count = suggestion_count + 1;
-	    				
-	    				var title = this.projectComposition.project.title;
-	    				var url = this.projectComposition.project.url;
-	    				var suggestion = '<div class="col-md-5 suggestion column alert block-message alert-info">';
-	    				suggestion = suggestion + '<a href="';
-	    				suggestion = suggestion + url;
-	    				suggestion = suggestion + '" target="_blank">';
-	    				suggestion = suggestion + title;
-	    				suggestion = suggestion + '</a>';
-	    				suggestion = suggestion + '</div>';
-	    				
-	    				if (suggestion_count >= 2) {
-	    					suggestion_count = 0;
-	    					suggestion = suggestion + '</div>';
-	    					suggestion = suggestion + suggestion_row_start;
-	    				}
-	    				
-	    				suggestions = suggestions + suggestion;
-	    		    });
-	    			
-	    			suggestions = suggestions + '</div>';
-	    			$('#suggestions').html(suggestions);
-	    		}) // end of .get() call
-	    		.fail(function() { suggestions_error('Suggestions problem - unknown error with AJAX request.') } )
-	    		; // end of .get() row above
-            }; // end of check on facetview query
-    } // end of gtr search function
 
-	$(document).on('keyup', 'input[name=q]', gtrDelayedSearch);
-});
-  </script>
   
 {%- endblock js_bottom %}

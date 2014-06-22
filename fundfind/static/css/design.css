@@ -53,6 +53,7 @@ h2 {
 	text-align: center;
 }
 /* buttons */
+/*
 .btn { 
 padding: 6px 12px 0 0;
 }
@@ -93,6 +94,7 @@ padding: 6px 12px 0 0;
 	background-color:#bdbec0 ;
 	border-color: transparent;
 }
+*/
 /* intro */
 .gray {
 	background-color: #bdbec0;
@@ -179,15 +181,6 @@ padding: 6px 12px 0 0;
 	color:#4dbce5;
 	font-size: 1.3em;
 	padding:15px 0 15px 0; 
-}
-.form-control {
-	border-radius: 0px;
-	background-color: #ecedef;
-	border-color: transparent;
-	height: 40px;
-	margin-top: 10px;
-	color: #bdbec0;
-	box-shadow: none;
 }
 .checkbox {
 	font-family: 'Josefin Slab', serif;

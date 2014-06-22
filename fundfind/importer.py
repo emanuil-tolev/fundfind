@@ -70,6 +70,8 @@ class Importer(object):
         record = {
             "funder": request.values.get("funder", ''),
             "title": request.values["title"],
+            "residency": request.values.get("residency"),
+            "gender": request.values.get("gender"),
             "id": id_,
             "url": util.prep_link(request.values.get("url",'')),
             "description": Markup.escape(request.values.get("more_info",'')),
@@ -79,7 +81,7 @@ class Importer(object):
             "funds_exactly_or_upto": request.values.get('funds_exactly_or_upto',''),
             "useful_links": useful_links,
             "tags": util.clean_list(request.values.get("tags",'').split(",")), 
-            "of_interest_to": util.clean_list(request.values.get("of_interest_to",'').split(",")), 
+            "subjects": util.clean_list(request.values.get("subjects",'').split(",")),
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
             "owner": self.owner.id,
