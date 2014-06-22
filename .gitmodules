@@ -1,3 +1,6 @@
 [submodule "fundfind/static/vendor/facetview2"]
 	path = fundfind/static/vendor/facetview2
 	url = https://github.com/CottageLabs/facetview2.git
+[submodule "fundfind/static/vendor/jQuery-linkify"]
+	path = fundfind/static/vendor/jQuery-linkify
+	url = https://github.com/SoapBox/jQuery-linkify.git
